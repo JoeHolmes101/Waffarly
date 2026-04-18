@@ -1486,16 +1486,19 @@
         const userCounts = {};
         reports.forEach(r => {
            if(r.item) {
-             const usr = r.loc || "Anonymous";
-             if(usr.toLowerCase() !== "unknown") userCounts[usr] = (userCounts[usr] || 0) + 1;
+             let alias = r.userName;
+             if (!alias || alias.toLowerCase().includes("anonymous") || alias.trim() === "waffarly_user") {
+                 alias = r.loc && r.loc.toLowerCase() !== "unknown" ? (r.loc + " Contributor") : "Anonymous Contributor";
+             }
+             if (alias.toLowerCase() !== "unknown contributor") userCounts[alias] = (userCounts[alias] || 0) + 1;
            }
         });
         const sorted = Object.entries(userCounts).sort((a,b) => b[1] - a[1]);
         
         let rank = 1;
         sorted.forEach((u, i) => {
-           if(u[0] === "Anonymous" || rank > 5) return;
-           const title = u[0] + " Contributor";
+           if(u[0] === "Anonymous Contributor" || rank > 5) return;
+           const title = u[0];
            const initial = title.charAt(0).toUpperCase();
            const pts = u[1] * 10;
            const cls = rank <= 3 ? 'top-3' : '';
