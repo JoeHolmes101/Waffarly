@@ -3,7 +3,1640 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waffarly | Egypt's Price Tracker</title>
+
+  <!-- Google Fonts: Inter for English, Cairo for Arabic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Leaflet CSS for Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    /* --------------------------
+       1. VARIABLES & RESET
+       -------------------------- */
+    :root {
+      /* Brand Colors */
+      --primary: #6c5ce7;
+      --primary-hover: #5a4bcf;
+      --secondary: #e84393;
+
+      /* Surface & Background Colors */
+      --bg-dark: #0f172a;
+      --bg-darker: #0b0f19;
+      --surface-glass: rgba(30, 41, 59, 0.6);
+      --surface-glass-hover: rgba(30, 41, 59, 0.8);
+      --border-glass: rgba(255, 255, 255, 0.1);
+
+      /* Semantic Colors */
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+
+      /* Typography */
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+
+      /* Gradients */
+      --gradient-brand: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+
+      /* Spacing & Sizes */
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+
+      /* Transitions */
+      --trans-fast: 0.2s ease;
+      --trans-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', 'Cairo', sans-serif;
+      background-color: var(--bg-darker);
+      color: var(--text-main);
+      background-image:
+        radial-gradient(circle at 15% 50%, rgba(108, 92, 231, 0.15), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(232, 67, 147, 0.15), transparent 25%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    /* --------------------------
+       2. UTILITIES & GLASSMORPHISM
+       -------------------------- */
+    .glass {
+      background: var(--surface-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .glass-hover:hover {
+      background: var(--surface-glass-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+      transition: var(--trans-smooth);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: var(--trans-fast);
+    }
+
+    .btn-primary {
+      background: var(--gradient-brand);
+      color: white;
+      box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(108, 92, 231, 0.6);
+      transform: scale(1.05);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .text-gradient {
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge.success {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .badge.danger {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* --------------------------
+       3. TYPOGRAPHY & LAYOUT
+       -------------------------- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: -1px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+    }
+
+    /* --------------------------
+       4. NAVIGATION
+       -------------------------- */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: var(--trans-fast);
+    }
+
+    header.scrolled {
+      background: rgba(11, 15, 25, 0.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: var(--trans-fast);
+      cursor: pointer;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-main);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* --------------------------
+       5. MAIN VIEWS
+       -------------------------- */
+    main {
+      padding-top: 80px;
+      padding-bottom: 4rem;
+    }
+
+    .view {
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* --- HOME VIEW --- */
+    .hero {
+      text-align: center;
+      padding: 6rem 1rem 4rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .search-box {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 1.25rem 3rem 1.25rem 1.5rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-glass);
+      background: rgba(30, 41, 59, 0.4);
+      color: white;
+      font-size: 1.1rem;
+      backdrop-filter: blur(8px);
+      transition: var(--trans-fast);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
+    }
+
+    .search-box i {
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      pointer-events: none;
+    }
+
+    /* Ticker */
+    .ticker-wrap {
+      width: 100%;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid var(--border-glass);
+      border-bottom: 1px solid var(--border-glass);
+      padding: 0.75rem 0;
+      margin: 2rem 0 4rem;
+      display: flex;
+      white-space: nowrap;
+    }
+
+    .ticker {
+      display: inline-block;
+      animation: ticker 25s linear infinite;
+    }
+
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-right: 3rem;
+      font-size: 0.95rem;
+    }
+
+    .ticker-item span.store {
+      color: var(--text-muted);
+    }
+
+    .ticker-item span.price {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .ticker-item .pulse {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes ticker {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+      }
+
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+
+    /* Dashboard Grid (Home) */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .map-container {
+      height: 400px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+    }
+
+    #heatmap,
+    #item-map {
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .panel-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-glass);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-body {
+      padding: 1.5rem;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .category-card {
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--trans-fast);
+    }
+
+    .category-card i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    /* Inflation Indicator */
+    .inflation-card {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .inflation-val {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--danger);
+      line-height: 1;
+      margin: 1rem 0;
+    }
+
+    .inflation-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* --- ITEM VIEW --- */
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 2rem;
+      padding-top: 2rem;
+    }
+
+    .item-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .item-meta {
+      color: var(--text-muted);
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    .chart-container {
+      height: 350px;
+      width: 100%;
+      position: relative;
+    }
+
+    .store-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .store-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-sm);
+    }
+
+    .store-info strong {
+      display: block;
+    }
+
+    .store-info span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .store-price {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    /* --- LEADERBOARD VIEW --- */
+    .leaderboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+
+    .leader-row {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-md);
+      transition: var(--trans-fast);
+    }
+
+    .leader-row.top-3 {
+      background: rgba(108, 92, 231, 0.1);
+      border: 1px solid rgba(108, 92, 231, 0.3);
+    }
+
+    .leader-rank {
+      width: 40px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .leader-row.top-3 .leader-rank {
+      color: var(--warning);
+    }
+
+    .leader-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-right: 1rem;
+    }
+
+    .leader-info {
+      flex: 1;
+    }
+
+    .leader-name {
+      font-weight: 600;
+      display: block;
+    }
+
+    .leader-badge {
+      font-size: 0.75rem;
+      color: var(--primary);
+    }
+
+    .leader-pts {
+      font-weight: 800;
+      color: var(--success);
+    }
+
+    /* --------------------------
+       6. MODALS
+       -------------------------- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 500px;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-glass);
+      background: rgba(0, 0, 0, 0.2);
+      color: white;
+      transition: var(--trans-fast);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .ai-magic {
+      padding: 1rem;
+      background: rgba(108, 92, 231, 0.1);
+      border: 1px dashed var(--primary);
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .file-upload {
+      border: 2px dashed var(--border-glass);
+      padding: 2rem;
+      text-align: center;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--trans-fast);
+    }
+
+    .file-upload:hover {
+      border-color: var(--primary);
+      background: rgba(108, 92, 231, 0.05);
+    }
+
+    /* --------------------------
+       7. MOBILE RESPONSIVENESS
+       -------------------------- */
+    @media (max-width: 768px) {
+
+      .dashboard-grid,
+      .item-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--bg-dark);
+        flex-direction: column;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-glass);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .hero {
+        padding: 4rem 1rem 2rem;
+      }
+
+      .item-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%236c5ce7' d='M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 138.5c15.8-15.8 41.4-15.8 57.2 0L336 196.8 464.5 68.5c6.6-6.6 17.4-6.6 24 0l23.5 23.5c6.6 6.6 6.6 17.4 0 24L364.5 259.5c-15.8 15.8-41.4 15.8-57.2 0L249 201.2 64 386.2V464c0 8.8 7.2 16 16 16h432c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16H112V128c0-8.8-7.2-16-16-16H64z'/></svg>" />
+</head>
+
+<body>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:10px;"></div>
+
+  <!-- ================= HEADER ================= -->
+  <header id="main-header">
+    <div class="container nav-inner">
+      <div class="logo" onclick="app.navigate('home')">
+        <i class="fa-solid fa-chart-line text-gradient"></i>
+        <span>Waffarly<span style="color:var(--primary)">.</span></span>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <button class="btn btn-primary" onclick="app.openModal('report-modal')" style="padding: 0.5rem 1rem; font-size: 0.9rem; white-space:nowrap;"><i class="fa-solid fa-plus"></i> Report Price</button>
+        <button class="mobile-menu-btn" style="position:static;" onclick="document.getElementById('nav-links').classList.toggle('active')">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a onclick="app.navigate('home')" class="active" id="nav-home">Home</a></li>
+        <li><a onclick="app.navigate('leaderboard')" id="nav-leaderboard">Leaderboard</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ================= TICKER (Global) ================= -->
+  <div class="ticker-wrap" id="global-ticker"
+    style="display:none; margin:0; position:fixed; top:70px; z-index:900; background:rgba(15, 23, 42, 0.9); backdrop-filter:blur(8px);">
+    <div class="ticker" id="ticker-content">
+      <!-- Dynamic Ticker populated by JS -->
+    </div>
+    <!-- duplicated for smooth infinite scroll -->
+    <div class="ticker" id="ticker-content-clone"></div>
+  </div>
+
+  <!-- ================= MAIN APP CONTAINER ================= -->
+  <main id="app-container" class="container">
+
+    <!-- ---------------- HOME VIEW ---------------- -->
+    <div id="view-home" class="view">
+
+      <section class="hero">
+        <h1>Track Real-Time Prices Across <span class="text-gradient">Egypt</span></h1>
+        <p>Egypt’s first crowdsourced price tracker for everyday consumer goods. Find the cheapest stores near you and
+          beat inflation.</p>
+        <div class="search-box" style="position:relative;">
+          <input type="text" placeholder="Search for items... (e.g. Arroz, Milk, Sugar)" id="search-input" onkeyup="if(event.key==='Enter') { document.getElementById('search-suggestions').style.display='none'; app.navigate('item', {slug: this.value.trim().toLowerCase()}); } else app.showSuggestions(this.value);" autocomplete="off">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <div id="search-suggestions" class="glass" style="display:none; position:absolute; top:calc(100% + 10px); left:0; width:100%; border-radius:12px; max-height:250px; overflow-y:auto; z-index:1000; flex-direction:column; padding:0.5rem; text-align:left;"></div>
+        </div>
+      </section>
+
+      <div class="ticker-wrap" style="margin-top: 0;">
+        <div class="ticker" id="hero-ticker-content"></div>
+        <div class="ticker" id="hero-ticker-clone"></div>
+      </div>
+
+      <section class="dashboard-grid">
+        <!-- Live Heatmap -->
+        <div class="glass flex-col">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-map-location-dot"></i> Live Price Heatmap</h3>
+            <span class="badge success">Live</span>
+          </div>
+          <div class="map-container">
+            <div id="heatmap"></div>
+          </div>
+        </div>
+
+        <!-- Sidebar (Categories & Inflation) -->
+        <div class="flex-col" style="display:flex; flex-direction:column; gap:2rem;">
+
+          <div class="glass">
+            <div class="panel-header">
+              <h3>Categories</h3>
+            </div>
+            <div class="panel-body category-grid">
+              <div class="glass glass-hover category-card" onclick="app.openCategoryModal('Food')">
+                <i class="fa-solid fa-bowl-rice"></i>
+                <div>Food</div>
+              </div>
+              <div class="glass glass-hover category-card" onclick="app.openCategoryModal('Household')">
+                <i class="fa-solid fa-jug-detergent"></i>
+                <div>Household</div>
+              </div>
+              <div class="glass glass-hover category-card" onclick="app.openCategoryModal('Medicine')">
+                <i class="fa-solid fa-pills"></i>
+                <div>Medicine</div>
+              </div>
+              <div class="glass glass-hover category-card" onclick="app.openCategoryModal('Fuel')">
+                <i class="fa-solid fa-gas-pump"></i>
+                <div>Fuel</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass inflation-card panel-body">
+            <h3>Egypt CPI Indicator</h3>
+            <div class="inflation-val">+29.8%</div>
+            <p>Annual Inflation Rate (Est.)</p>
+            <div
+              style="margin-top:1rem; height:8px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden;">
+              <div style="width:75%; height:100%; background:var(--danger);"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+    <!-- ---------------- ITEM VIEW ---------------- -->
+    <div id="view-item" class="view hidden">
+      <div class="item-header">
+        <div class="item-title">
+          <div
+            style="width:64px; height:64px; background:var(--surface-glass); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:2rem; border:1px solid var(--border-glass);">
+            <i class="fa-solid fa-bowl-rice" id="item-icon"></i>
+          </div>
+          <div>
+            <h1 id="item-name">Arroz (Rice 1kg)</h1>
+            <div class="item-meta">Category: Food &bull; Avg Price: <strong class="text-gradient">35 EGP</strong></div>
+          </div>
+        </div>
+        <div style="display:flex; gap:1rem; align-items:center;">
+          <span style="background:var(--surface-glass); color:var(--text-muted); padding:0.5rem 1rem; border-radius:2rem; border:1px solid var(--border-glass); display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; white-space:nowrap;"><i class="fa-regular fa-bell"></i> Alerts (Coming Soon)</span>
+          <button class="btn btn-primary" onclick="app.openModal('report-modal')" style="white-space:nowrap; padding:0.5rem 1rem; font-size:0.9rem;"><i class="fa-solid fa-plus"></i> Report Price</button>
+        </div>
+      </div>
+
+      <div class="item-grid">
+        <!-- Main Chart -->
+        <div class="glass">
+          <div class="panel-header">
+            <h3>Price Trend (Last 30 Days)</h3>
+          </div>
+          <div class="panel-body">
+            <div class="chart-container">
+              <canvas id="priceChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cheaper Stores & Maps -->
+        <div style="display:flex; flex-direction:column; gap:2rem;">
+          <div class="glass">
+            <div class="panel-header">
+              <h3>Community Prices</h3>
+            </div>
+            <div class="panel-body store-list">
+              <p style="color:var(--text-muted); text-align:center;">Loading community prices from database...</p>
+            </div>
+          </div>
+
+          <div class="glass" style="height:250px; overflow:hidden;">
+            <div id="item-map"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------------- LEADERBOARD VIEW ---------------- -->
+    <div id="view-leaderboard" class="view hidden">
+      <div style="text-align:center; padding: 4rem 0 2rem;">
+        <h1>Top Reporters</h1>
+        <p style="color:var(--text-muted);">Help the community beat inflation and earn badges.</p>
+      </div>
+
+      <div class="glass" style="max-width:800px; margin:0 auto; padding:2rem;">
+        <div
+          style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-glass); padding-bottom:1rem;">
+          <h3 style="margin:0;">This Week</h3>
+          <span class="badge success" style="display:flex; align-items:center;">Live Updates</span>
+        </div>
+
+        <div class="leaderboard-list">
+          <p style="text-align:center; color:var(--text-muted); padding:2rem;">Community leaderboard syncing active...</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Report Modal -->
+  <div class="modal-overlay" id="report-modal">
+    <div class="glass modal-content">
+      <button class="modal-close" onclick="app.closeModal('report-modal')">&times;</button>
+      <div class="panel-header">
+        <h3>Report a Price</h3>
+      </div>
+      <div class="panel-body">
+
+        <div class="form-group" style="display:flex; gap:1rem;">
+          <div style="flex:1;">
+            <label>Item Name & Price</label>
+            <input type="text" id="report-item" class="form-control" placeholder="e.g. Arroz 1kg for 32.50 EGP">
+          </div>
+          <div style="width:140px;">
+            <label>Your Name</label>
+            <input type="text" id="report-name" class="form-control" placeholder="Optional">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Detailed Location</label>
+          <textarea id="report-loc" class="form-control"
+            placeholder="Please explain exactly where this store is (e.g., 'Next to the main mosque in downtown, 5th street, Carrefour Express')"></textarea>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%; margin-top:1rem;" onclick="app.submitReport()">Submit to
+          Waffarly Database</button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Modal -->
+  <div class="modal-overlay" id="alert-modal">
+    <div class="glass modal-content">
+      <button class="modal-close" onclick="app.closeModal('alert-modal')">&times;</button>
+      <div class="panel-header">
+        <h3>Set Price Alert</h3>
+      </div>
+      <div class="panel-body">
+        <p style="margin-bottom:1.5rem; color:var(--text-muted); font-size:0.9rem;">We'll notify you when the price of
+          this item drops below your target.</p>
+
+        <div class="form-group">
+          <label>Target Price (EGP)</label>
+          <input type="number" class="form-control" placeholder="e.g. 30">
+        </div>
+
+        <div class="form-group">
+          <label>Area (Optional)</label>
+          <select class="form-control">
+            <option>All of Cairo</option>
+            <option>Maadi</option>
+            <option>New Cairo</option>
+            <option>Zamalek</option>
+            <option>Giza</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Notification Email</label>
+          <input type="email" class="form-control" placeholder="your@email.com">
+        </div>
+
+        <button class="btn btn-primary" style="width:100%;" onclick="app.submitAlert()">Create Alert</button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Selection Modal -->
+  <div class="modal-overlay" id="category-modal">
+    <div class="glass modal-content">
+      <button class="modal-close" onclick="app.closeModal('category-modal')">&times;</button>
+      <div class="panel-header">
+        <h3 id="cat-modal-title">Select Item</h3>
+      </div>
+      <div class="panel-body" id="cat-modal-body" style="display:flex; flex-direction:column; gap:0.5rem; max-height:400px; overflow-y:auto;">
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" crossorigin="anonymous"></script>
+  <!-- Leaflet CDN -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <script>
+    /**
+     * Waffarly Application Logic
+     * Handles SPA Routing, Maps, Charts, and mock Google Sheet Data polling.
+     */
+
+    const app = {
+      state: {
+        userId: null,
+        userName: '',
+        currentView: 'home',
+        currentItem: null,
+        reports: [],
+        mapHome: null,
+        mapItem: null,
+        chartInstance: null
+      },
+
+      // --- LIVE API (Google Sheets) ---
+      api: {
+        SHEET_URL: "https://script.google.com/macros/s/AKfycbxz-UAVPJN47xTfnmyGb42X6_IsggcEDvgxfXq9EDHlriusNB6DpMrCaWd-PPpvznq0eA/exec",
+        getLatestReports: async () => {
+          try {
+            const res = await fetch("https://script.google.com/macros/s/AKfycbxz-UAVPJN47xTfnmyGb42X6_IsggcEDvgxfXq9EDHlriusNB6DpMrCaWd-PPpvznq0eA/exec");
+            return await res.json();
+          } catch(e) {
+            console.error("Error loading feed:", e);
+            return [];
+          }
+        },
+        submitPrice: async (dataBody) => {
+          try {
+            await fetch("https://script.google.com/macros/s/AKfycbxz-UAVPJN47xTfnmyGb42X6_IsggcEDvgxfXq9EDHlriusNB6DpMrCaWd-PPpvznq0eA/exec", {
+              method: "POST",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify(dataBody)
+            });
+            return { success: true };
+          } catch(e) {
+            console.error("Error submitting price:", e);
+            return { error: true };
+          }
+        }
+      },
+
+      // --- ROUTING & NAVIGATION ---
+      init: async function () {
+        // Handle User Identity (Anonymous Session)
+        if (!localStorage.getItem('waffarly_uuid')) {
+          localStorage.setItem('waffarly_uuid', 'Anonymous Shopper#' + Math.floor(1000 + Math.random() * 9000));
+        }
+        this.state.userId = localStorage.getItem('waffarly_uuid');
+        this.state.userName = localStorage.getItem('waffarly_name') || '';
+
+        // Handle navbar scroll effect
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 50) document.getElementById('main-header').classList.add('scrolled');
+          else document.getElementById('main-header').classList.remove('scrolled');
+        });
+
+        // Search input binding
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            const val = e.target.value.trim();
+            if (val) this.navigate('item', { slug: val.toLowerCase() });
+          }
+        });
+
+        // Initial Data load
+        this.updateTicker();
+        setInterval(() => this.updateTicker(), 15000); // Poll every 15s
+
+        // Parse hash if present
+        this.handleHashRoute();
+        window.addEventListener('hashchange', () => this.handleHashRoute());
+      },
+
+      handleHashRoute: function () {
+        const hash = window.location.hash.replace('#', '');
+        if (!hash) {
+          this.navigate('home', null, false);
+          return;
+        }
+        if (hash.startsWith('item/')) {
+          const slug = hash.split('/')[1];
+          this.navigate('item', { slug: decodeURIComponent(slug) }, false);
+        } else {
+          this.navigate(hash, null, false);
+        }
+      },
+
+      navigate: function (viewId, params = null, pushState = true) {
+        // Hide all views
+        document.querySelectorAll('.view').forEach(el => el.classList.add('hidden'));
+
+        // Update nav links
+        document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+        const navEl = document.getElementById('nav-' + viewId);
+        if (navEl) navEl.classList.add('active');
+
+        // Close mobile menu if open
+        document.getElementById('nav-links').classList.remove('active');
+
+        // Show requested view
+        const targetView = document.getElementById('view-' + viewId);
+        if (targetView) {
+          targetView.classList.remove('hidden');
+          this.state.currentView = viewId;
+
+          // View Specific logic
+          if (viewId === 'home') {
+            if (pushState) window.history.pushState(null, null, '#home');
+            document.getElementById('global-ticker').style.display = 'none';
+            document.getElementById('app-container').style.paddingTop = '80px';
+            this.initHomeMap();
+          }
+          else if (viewId === 'item') {
+            if (pushState) window.history.pushState(null, null, '#item/' + (params?.slug || 'arroz'));
+            document.getElementById('global-ticker').style.display = 'flex';
+            document.getElementById('app-container').style.paddingTop = '130px';
+            this.loadItemData(params?.slug || 'arroz');
+          }
+          else if (viewId === 'leaderboard') {
+            if (pushState) window.history.pushState(null, null, '#leaderboard');
+            document.getElementById('global-ticker').style.display = 'none';
+            document.getElementById('app-container').style.paddingTop = '80px';
+            if (this.updateLeaderboard) this.updateLeaderboard();
+          }
+        }
+      },
+
+      // --- TICKER LOGIC ---
+      updateTicker: async function () {
+        const reports = await this.api.getLatestReports();
+        let htmlSnippet = '';
+        reports.forEach(r => {
+          if (!r.item || isNaN(parseFloat(r.price))) return;
+          const priceFormatted = parseFloat(r.price).toFixed(2);
+          htmlSnippet += `<div class="ticker-item"><div class="pulse"></div><span>${r.item}</span><span class="store">@ ${r.store || 'Unknown'} (${r.loc || 'Unknown'})</span><span class="price">${priceFormatted} ${r.currency || 'EGP'}</span><span style="font-size:0.8rem;color:var(--text-muted); margin-left:0.5rem">${r.time}</span></div>`;
+        });
+
+        if (!htmlSnippet) {
+           htmlSnippet = '<div class="ticker-item"><div class="pulse"></div><span>Waiting for community reports...</span></div>';
+        }
+
+        // Populate both tickers for scrolling effect
+        const heroTicker = document.getElementById('hero-ticker-content');
+        if (heroTicker) heroTicker.innerHTML = htmlSnippet;
+        
+        const heroClone = document.getElementById('hero-ticker-clone');
+        if (heroClone) heroClone.innerHTML = htmlSnippet;
+
+        const mainTicker = document.getElementById('ticker-content');
+        if (mainTicker) mainTicker.innerHTML = htmlSnippet;
+        
+        const mainClone = document.getElementById('ticker-content-clone');
+        if (mainClone) mainClone.innerHTML = htmlSnippet;
+      },
+
+      // --- MAPS (LEAFLET) ---
+      initHomeMap: async function () {
+        if (!this.state.mapHome) {
+          this.state.mapHome = L.map('heatmap', { zoomControl: false, attributionControl: false }).setView([30.0444, 31.2357], 11);
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(this.state.mapHome);
+        }
+        
+        const reports = await this.api.getLatestReports();
+        
+        const geoMap = {
+          "maadi": [29.9602, 31.2569], "zayed": [30.0450, 30.9850], "zamalek": [30.0626, 31.2222],
+          "new cairo": [30.0211, 31.4645], "giza": [30.0131, 31.2089], "downtown": [30.0444, 31.2357],
+          "shubra": [30.1286, 31.2422], "heliopolis": [30.0911, 31.3283], "nasr city": [30.0559, 31.3323],
+          "mohandeseen": [30.0553, 31.1983], "dokki": [30.0381, 31.2112], "rehab": [30.0526, 31.4880],
+          "madinaty": [30.0825, 31.6033], "october": [29.9381, 30.9136]
+        };
+
+        const heatCounts = {};
+        reports.forEach(r => {
+           if(r.loc) {
+             const l = r.loc.toLowerCase();
+             let matched = false;
+             for(let k in geoMap) {
+                if(l.includes(k)) { heatCounts[k] = (heatCounts[k] || 0) + 1; matched = true; break;}
+             }
+             if(!matched) { heatCounts["downtown"] = (heatCounts["downtown"] || 0) + 1; }
+           }
+        });
+
+        for(let k in heatCounts) {
+           L.circle(geoMap[k], { color: 'var(--primary)', fillColor: "rgba(108, 92, 231, 0.4)", fillOpacity: 0.6, radius: 1000 + (heatCounts[k]*300) }).addTo(this.state.mapHome);
+        }
+      },
+
+      initItemMap: function (relReports = []) {
+        if (this.state.mapItem) { this.state.mapItem.remove(); }
+        this.state.mapItem = L.map('item-map', { zoomControl: false, attributionControl: false }).setView([30.0444, 31.2357], 11);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(this.state.mapItem);
+
+        const geoMap = {
+          "maadi": [29.9602, 31.2569], "zayed": [30.0450, 30.9850], "zamalek": [30.0626, 31.2222],
+          "new cairo": [30.0211, 31.4645], "giza": [30.0131, 31.2089], "downtown": [30.0444, 31.2357],
+          "shubra": [30.1286, 31.2422], "heliopolis": [30.0911, 31.3283], "nasr city": [30.0559, 31.3323],
+          "mohandeseen": [30.0553, 31.1983], "dokki": [30.0381, 31.2112], "rehab": [30.0526, 31.4880],
+          "madinaty": [30.0825, 31.6033], "october": [29.9381, 30.9136]
+        };
+        
+        relReports.forEach(r => {
+             const l = (r.loc || "downtown").toLowerCase();
+             let coords = geoMap["downtown"];
+             for(let k in geoMap) if(l.includes(k)) coords = geoMap[k];
+             // Add tiny jitter
+             coords = [coords[0] + (Math.random()*0.02 - 0.01), coords[1] + (Math.random()*0.02 - 0.01)];
+
+             const customIcon = L.divIcon({
+               className: 'custom-pin',
+               html: `<div style="background:var(--success); color:white; padding:4px 8px; border-radius:12px; font-weight:bold; font-size:12px; box-shadow:0 2px 10px rgba(0,0,0,0.5);">${parseFloat(r.price).toFixed(2)}</div>`,
+               iconSize: [60, 24], iconAnchor: [30, 12]
+             });
+             L.marker(coords, { icon: customIcon }).addTo(this.state.mapItem);
+        });
+      },
+
+
+      // --- CHART.JS ---
+      initChart: function (relReports = []) {
+        const ctx = document.getElementById('priceChart');
+        if (this.state.chartInstance) { this.state.chartInstance.destroy(); }
+
+        const labels = [];
+        const data = [];
+        
+        if (relReports.length > 0) {
+            // Sort by earliest first
+            relReports.forEach((r, idx) => {
+               labels.push(r.time || `Trend Pt ${idx+1}`);
+               data.push(parseFloat(r.price));
+            });
+            labels.reverse();
+            data.reverse();
+        } else {
+            labels.push("No data"); data.push(0);
+        }
+
+        // Create gradient fill
+        const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 350);
+        gradient.addColorStop(0, 'rgba(108, 92, 231, 0.5)');
+        gradient.addColorStop(1, 'rgba(108, 92, 231, 0.0)');
+
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        this.state.chartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Avg Price (EGP)',
+              data: data,
+              borderColor: '#6c5ce7',
+              backgroundColor: gradient,
+              borderWidth: 3,
+              tension: 0.4,
+              fill: true,
+              pointBackgroundColor: '#e84393',
+              pointRadius: 0,
+              pointHoverRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleFont: { size: 13 },
+                bodyFont: { size: 14, weight: 'bold' },
+                padding: 10,
+                displayColors: false,
+                callbacks: {
+                  label: function (context) { return `${context.parsed.y.toFixed(2)} EGP`; }
+                }
+              }
+            },
+            scales: {
+              x: { grid: { display: false, drawBorder: false }, ticks: { maxTicksLimit: 6 } },
+              y: { grid: { color: 'rgba(255,255,255,0.05)' }, border: { dash: [4, 4] } }
+            }
+          }
+        });
+      },
+
+      // --- ITEM DATA MOCKING ---
+      loadItemData: async function (slug) {
+        // Change title and icon based on slug
+        const titleEl = document.getElementById('item-name');
+        const iconEl = document.getElementById('item-icon');
+
+        let searchKey = decodeURIComponent(slug);
+        if (searchKey === 'milk') {
+          titleEl.innerText = "Milk 1L (Full Cream)";
+          iconEl.className = "fa-solid fa-jug-detergent";
+        } else if (slug === 'panadol') {
+          titleEl.innerText = "Panadol Advance 500mg";
+          iconEl.className = "fa-solid fa-pills";
+        } else if (slug === 'gas') {
+          titleEl.innerText = "Gasoline 95 Octane";
+          iconEl.className = "fa-solid fa-gas-pump";
+        } else if (slug === 'sugar') {
+          titleEl.innerText = "Sugar 1kg";
+          iconEl.className = "fa-solid fa-cubes-stacked";
+        } else if (slug === 'eggs') {
+          titleEl.innerText = "Eggs (30)";
+          iconEl.className = "fa-solid fa-egg";
+        } else if (slug === 'detergent') {
+          titleEl.innerText = "Laundry Detergent";
+          iconEl.className = "fa-solid fa-soap";
+        } else if (slug === 'arroz' || slug === 'rice') {
+          titleEl.innerText = "Arroz (Rice 1kg)";
+          iconEl.className = "fa-solid fa-bowl-rice";
+          searchKey = 'arroz';
+        } else {
+          // Dynamic formatting for custom search queries
+          const capitalized = searchKey.charAt(0).toUpperCase() + searchKey.slice(1).replace(/-/g, ' ');
+          titleEl.innerText = capitalized;
+          iconEl.className = "fa-solid fa-box-open";
+        }
+
+        const storeListEl = document.querySelector('.store-list');
+        storeListEl.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Loading prices from database...</p>';
+        const reports = await this.api.getLatestReports();
+        
+        const relReports = reports.filter(r => r.item && r.item.toLowerCase().includes(searchKey.toLowerCase()) && !isNaN(parseFloat(r.price)));
+        
+        if (relReports.length === 0) {
+           storeListEl.innerHTML = '<p style="color:var(--text-muted); text-align:center;">No recent price reports found for this item.</p>';
+           const metaEl = document.querySelector('.item-meta');
+           if(metaEl) metaEl.innerHTML = `Category: Local Intel &bull; Avg Price: <strong class="text-gradient">-- EGP</strong>`;
+           this.initChart([]);
+           this.initItemMap([]);
+           return;
+        }
+
+        relReports.sort((a,b) => parseFloat(a.price) - parseFloat(b.price));
+        storeListEl.innerHTML = '';
+        let total = 0;
+        relReports.forEach(r => {
+           total += parseFloat(r.price);
+           storeListEl.innerHTML += `
+             <div class="store-item">
+               <div class="store-info">
+                 <strong>${r.store || 'Unknown Store'}</strong>
+                 <span>${r.loc || 'Unknown Area'}</span>
+               </div>
+               <div class="store-price">${parseFloat(r.price).toFixed(2)} ${r.currency || 'EGP'}</div>
+             </div>
+           `;
+        });
+        
+        const avg = (total / relReports.length).toFixed(2);
+        const metaEl = document.querySelector('.item-meta');
+        if(metaEl) metaEl.innerHTML = `Category: Local Intel &bull; Avg Price: <strong class="text-gradient">${avg} ${relReports[0].currency || 'EGP'}</strong>`;
+
+        this.initChart(relReports);
+        this.initItemMap(relReports);
+      },
+
+      // --- MODAL HANDLERS ---
+      openModal: function (id) {
+        document.getElementById(id).classList.add('active');
+        if (id === 'report-modal' && this.state.userName) {
+          document.getElementById('report-name').value = this.state.userName;
+        }
+      },
+      closeModal: function (id) { document.getElementById(id).classList.remove('active'); },
+
+      openCategoryModal: async function(cat) {
+         this.openModal('category-modal');
+         document.getElementById('cat-modal-title').innerText = `${cat} Items`;
+         const body = document.getElementById('cat-modal-body');
+         body.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">Loading items...</p>';
+         
+         const reports = await this.api.getLatestReports();
+         const uniqueItems = Array.from(new Set(reports.map(r => r.item).filter(Boolean)));
+         
+         const dict = {
+            "Food": ["rice", "arroz", "sugar", "egg", "cheese", "milk", "bread", "meat", "chicken", "oil", "water", "apple"],
+            "Household": ["detergent", "soap", "tissue", "cleaner", "paper", "shampoo", "toothbrush"],
+            "Medicine": ["panadol", "pill", "medicine", "pharmacy", "tablet", "aspirin", "vitamin"],
+            "Fuel": ["gas", "fuel", "diesel", "petrol", "octane", "92", "95", "80"]
+         };
+         
+         const keywords = dict[cat] || [];
+         const matchedItems = uniqueItems.filter(item => {
+             const lower = item.toLowerCase();
+             return keywords.some(k => lower.includes(k));
+         });
+         
+         if(matchedItems.length === 0) {
+            body.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:2rem;">No new ${cat.toLowerCase()} items reported recently on the network.</p>`;
+            return;
+         }
+         
+         body.innerHTML = `<input type="text" id="cat-search" class="form-control" placeholder="Search ${cat} items..." style="margin-bottom:1rem;" onkeyup="app.filterCategoryItems()">
+         <div id="cat-item-list" style="display:flex; flex-direction:column; gap:0.5rem;"></div>`;
+         
+         const list = document.getElementById('cat-item-list');
+         matchedItems.forEach(item => {
+             const iconMap = { "Food": "fa-utensils", "Household": "fa-sink", "Medicine": "fa-pills", "Fuel": "fa-gas-pump" };
+             const icon = iconMap[cat] || "fa-box";
+             list.innerHTML += `<button class="btn btn-outline cat-modal-btn" style="text-align:left; justify-content:flex-start;" onclick="app.closeModal('category-modal'); app.navigate('item', {slug: '${item.toLowerCase()}'})"><i class="fa-solid ${icon}" style="width:25px;"></i> ${item}</button>`;
+         });
+      },
+
+      filterCategoryItems: function() {
+         const q = document.getElementById('cat-search')?.value.toLowerCase() || '';
+         document.querySelectorAll('.cat-modal-btn').forEach(btn => {
+            if(btn.innerText.toLowerCase().includes(q)) btn.style.display = 'flex';
+            else btn.style.display = 'none';
+         });
+      },
+
+      showSuggestions: async function(val) {
+         const box = document.getElementById('search-suggestions');
+         if(!val || val.length < 2) { box.style.display = 'none'; return; }
+         
+         const reports = await this.api.getLatestReports();
+         const unique = Array.from(new Set(reports.map(r => r.item).filter(Boolean)));
+         
+         const matches = unique.filter(i => i.toLowerCase().includes(val.toLowerCase()));
+         if(matches.length === 0) { box.style.display = 'none'; return; }
+         
+         box.innerHTML = '';
+         matches.forEach(m => {
+            box.innerHTML += `<div class="suggestion-item" onclick="document.getElementById('search-input').value='${m}'; document.getElementById('search-suggestions').style.display='none'; app.navigate('item', {slug: '${encodeURIComponent(m.toLowerCase())}'})" style="padding:0.8rem 1rem; cursor:pointer; color:var(--text); border-bottom:1px solid var(--border-glass); transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">${m}</div>`;
+         });
+         box.style.display = 'flex';
+      },
+
+      updateLeaderboard: async function() {
+        const lb = document.querySelector('.leaderboard-list');
+        if(!lb) return;
+        lb.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">Loading latest leaderboard data...</p>';
+        const reports = await this.api.getLatestReports();
+        if(reports.length === 0) {
+           lb.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">No data yet.</p>';
+           return;
+        }
+        lb.innerHTML = '';
+        const userCounts = {};
+        reports.forEach(r => {
+           if(r.item) {
+             const usr = r.loc || "Anonymous";
+             if(usr.toLowerCase() !== "unknown") userCounts[usr] = (userCounts[usr] || 0) + 1;
+           }
+        });
+        const sorted = Object.entries(userCounts).sort((a,b) => b[1] - a[1]);
+        
+        let rank = 1;
+        sorted.forEach((u, i) => {
+           if(u[0] === "Anonymous" || rank > 5) return;
+           const title = u[0] + " Contributor";
+           const initial = title.charAt(0).toUpperCase();
+           const pts = u[1] * 10;
+           const cls = rank <= 3 ? 'top-3' : '';
+           lb.innerHTML += `
+            <div class="glass leader-row ${cls}">
+              <div class="leader-rank">#${rank}</div>
+              <div class="leader-avatar" style="background:var(--${rank==1?'primary':rank==2?'secondary':'success'});">${initial}</div>
+              <div style="flex:1;">
+                <span class="leader-name">${title} <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:0.8rem;"></i></span>
+                <span class="leader-badge">${rank === 1 ? 'Top Contributor' : 'Price Hunter'}</span>
+              </div>
+              <div class="leader-pts">${pts} pts</div>
+            </div>`;
+           rank++;
+        });
+        if (lb.innerHTML === '') lb.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">No public contributors yet.</p>';
+      },
+
+      showToast: function(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        if(!container) return;
+        const toast = document.createElement('div');
+        toast.className = `glass`;
+        const icon = type === 'success' ? '<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>' : '<i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i>';
+        const borderColor = type === 'success' ? 'var(--success)' : 'var(--danger)';
+        toast.style.cssText = `padding: 1rem 1.5rem; border-radius: 12px; border-left: 4px solid ${borderColor}; display:flex; align-items:center; gap:0.8rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: fadeUp 0.3s ease forwards;`;
+        toast.innerHTML = `${icon} <span style="font-weight:bold;">${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(20px)';
+          toast.style.transition = 'all 0.3s ease';
+          setTimeout(() => toast.remove(), 300);
+        }, 4000);
+      },
+
+      submitReport: async function () {
+        const itemText = document.getElementById('report-item')?.value.trim();
+        const locText = document.getElementById('report-loc')?.value.trim();
+        
+        if (!itemText) {
+          app.showToast('Please enter the Item Name & Price first!', 'danger');
+          return;
+        }
+
+        const nameInput = document.getElementById('report-name');
+        if (nameInput && nameInput.value.trim()) {
+          this.state.userName = nameInput.value.trim();
+          localStorage.setItem('waffarly_name', this.state.userName);
+        }
+
+        const btn = document.querySelector('#report-modal .btn-primary');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting securely...';
+        btn.disabled = true;
+
+        try {
+          const payload = {
+             rawItem: itemText,
+             rawLoc: locText,
+             userName: this.state.userName || this.state.userId
+          };
+          
+          await this.api.submitPrice(payload);
+          
+          setTimeout(() => {
+            app.showToast(`Request sent securely! Processing report...`, 'success');
+          }, 100);
+
+        } catch (e) {
+          console.error("Transmission Error:", e);
+          app.showToast("Error securely transmitting to database.", "danger");
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Report Sent! (+10 pts)';
+        btn.style.background = 'var(--success)';
+
+        if(this.updateLeaderboard) this.updateLeaderboard();
+
+        setTimeout(() => {
+          this.closeModal('report-modal');
+          // reset UI
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          if(document.getElementById('report-item')) document.getElementById('report-item').value = '';
+          if(document.getElementById('report-loc')) document.getElementById('report-loc').value = '';
+        }, 2000);
+      },
+
+      addSelfToLeaderboard: function () {
+        // Prevent duplicate self-inserts
+        const lb = document.querySelector('.leaderboard-list');
+        if (!lb || document.getElementById('user-lb-entry')) return;
+
+        const displayName = this.state.userName || this.state.userId;
+        const initial = displayName.charAt(0).toUpperCase();
+
+        const newRow = document.createElement('div');
+        newRow.id = 'user-lb-entry';
+        newRow.className = 'glass leader-row';
+        newRow.style.border = '1px solid var(--success)';
+        newRow.innerHTML = `
+            <div class="leader-rank" style="font-size:0.9rem; color:var(--success);">NEW</div>
+            <div class="leader-avatar" style="background:var(--success); color:white;">${initial}</div>
+            <div style="flex:1;">
+              <span class="leader-name">YOU (${displayName}) <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:0.8rem;"></i></span>
+              <span class="leader-badge">Just Submitted</span>
+            </div>
+            <div class="leader-pts">10 pts</div>
+        `;
+        // Insert right after the top 3 visually
+        lb.insertBefore(newRow, lb.children[3]);
+      },
+
+      submitAlert: function () {
+        const btn = document.querySelector('#alert-modal .btn-primary');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Alert Saved to Database';
+        btn.style.background = 'var(--success)';
+        setTimeout(() => {
+          this.closeModal('alert-modal');
+          btn.innerHTML = 'Create Alert';
+          btn.style.background = '';
+        }, 1500);
+      }
+    };
+
+    // Initialize application when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      app.init();
+    });
+
+  </script>
+</body>
+
+</html>
   <title>Waffarly | Egypt's Price Tracker</title>
 
   <!-- Google Fonts: Inter for English, Cairo for Arabic -->
