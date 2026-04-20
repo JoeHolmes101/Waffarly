@@ -6,56 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Waffarly | Egypt's Price Tracker</title>
 
-  <!-- Google Fonts: Inter for English, Cairo for Arabic -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 
-  <!-- Leaflet CSS for Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-
-  <!-- FontAwesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <style>
-    /* --------------------------
-       1. VARIABLES & RESET
-       -------------------------- */
     :root {
-      /* Brand Colors */
       --primary: #6c5ce7;
       --primary-hover: #5a4bcf;
       --secondary: #e84393;
-
-      /* Surface & Background Colors */
       --bg-dark: #0f172a;
       --bg-darker: #0b0f19;
       --surface-glass: rgba(30, 41, 59, 0.6);
       --surface-glass-hover: rgba(30, 41, 59, 0.8);
       --border-glass: rgba(255, 255, 255, 0.1);
-
-      /* Semantic Colors */
       --success: #10b981;
       --danger: #ef4444;
       --warning: #f59e0b;
       --info: #3b82f6;
-
-      /* Typography */
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-
-      /* Gradients */
       --gradient-brand: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-
-      /* Spacing & Sizes */
       --radius-sm: 8px;
       --radius-md: 16px;
       --radius-lg: 24px;
       --radius-full: 9999px;
-
-      /* Transitions */
       --trans-fast: 0.2s ease;
       --trans-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -95,9 +75,6 @@
       font-family: inherit;
     }
 
-    /* --------------------------
-       2. UTILITIES & GLASSMORPHISM
-       -------------------------- */
     .glass {
       background: var(--surface-glass);
       backdrop-filter: blur(12px);
@@ -177,9 +154,6 @@
       display: none !important;
     }
 
-    /* --------------------------
-       3. TYPOGRAPHY & LAYOUT
-       -------------------------- */
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -208,9 +182,6 @@
       font-size: 1.3rem;
     }
 
-    /* --------------------------
-       4. NAVIGATION
-       -------------------------- */
     header {
       position: fixed;
       top: 0;
@@ -269,9 +240,6 @@
       cursor: pointer;
     }
 
-    /* --------------------------
-       5. MAIN VIEWS
-       -------------------------- */
     main {
       padding-top: 80px;
       padding-bottom: 4rem;
@@ -293,7 +261,6 @@
       }
     }
 
-    /* --- HOME VIEW --- */
     .hero {
       text-align: center;
       padding: 6rem 1rem 4rem;
@@ -342,7 +309,17 @@
       pointer-events: none;
     }
 
-    /* Ticker */
+    /* FIX #7: RTL search icon on correct side */
+    [dir="rtl"] .search-box i {
+      right: auto;
+      left: 1.5rem;
+    }
+
+    [dir="rtl"] .search-box input {
+      padding: 1.25rem 1.5rem 1.25rem 3rem;
+      text-align: right;
+    }
+
     .ticker-wrap {
       width: 100%;
       overflow: hidden;
@@ -384,6 +361,7 @@
       border-radius: 50%;
       box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
       animation: pulse 2s infinite;
+      flex-shrink: 0;
     }
 
     @keyframes ticker {
@@ -394,6 +372,75 @@
       100% {
         transform: translateX(-50%);
       }
+    }
+
+    @keyframes ticker-rtl {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(50%);
+      }
+    }
+
+    /* RTL Language Overrides */
+    [dir="rtl"] body {
+      font-family: 'Cairo', 'Inter', sans-serif;
+    }
+
+    [dir="rtl"] .ticker {
+      animation-name: ticker-rtl;
+    }
+
+    [dir="rtl"] .nav-links {
+      direction: rtl;
+    }
+
+    [dir="rtl"] .item-header,
+    [dir="rtl"] .store-item,
+    [dir="rtl"] .leader-row {
+      direction: rtl;
+    }
+
+    [dir="rtl"] .form-group label {
+      text-align: right;
+      display: block;
+    }
+
+    [dir="rtl"] .panel-header,
+    [dir="rtl"] .hero,
+    [dir="rtl"] .category-card {
+      direction: rtl;
+    }
+
+    [dir="rtl"] #search-suggestions {
+      text-align: right;
+    }
+
+    /* FIX #7: RTL avatar margin */
+    [dir="rtl"] .leader-avatar {
+      margin-right: 0;
+      margin-left: 1rem;
+    }
+
+    .lang-toggle {
+      background: var(--surface-glass);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      padding: 0.4rem 0.9rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .lang-toggle:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
     }
 
     @keyframes pulse {
@@ -413,7 +460,6 @@
       }
     }
 
-    /* Dashboard Grid (Home) */
     .dashboard-grid {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -466,7 +512,6 @@
       color: var(--primary);
     }
 
-    /* Inflation Indicator */
     .inflation-card {
       margin-top: 2rem;
       text-align: center;
@@ -485,7 +530,6 @@
       font-size: 0.9rem;
     }
 
-    /* --- ITEM VIEW --- */
     .item-header {
       display: flex;
       justify-content: space-between;
@@ -546,7 +590,6 @@
       color: var(--success);
     }
 
-    /* --- LEADERBOARD VIEW --- */
     .leaderboard-list {
       display: flex;
       flex-direction: column;
@@ -588,6 +631,7 @@
       justify-content: center;
       font-weight: 700;
       margin-right: 1rem;
+      flex-shrink: 0;
     }
 
     .leader-info {
@@ -609,9 +653,6 @@
       color: var(--success);
     }
 
-    /* --------------------------
-       6. MODALS
-       -------------------------- */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -689,32 +730,6 @@
       min-height: 100px;
     }
 
-    .ai-magic {
-      padding: 1rem;
-      background: rgba(108, 92, 231, 0.1);
-      border: 1px dashed var(--primary);
-      border-radius: var(--radius-sm);
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-
-    .file-upload {
-      border: 2px dashed var(--border-glass);
-      padding: 2rem;
-      text-align: center;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: var(--trans-fast);
-    }
-
-    .file-upload:hover {
-      border-color: var(--primary);
-      background: rgba(108, 92, 231, 0.05);
-    }
-
-    /* --------------------------
-       7. MOBILE RESPONSIVENESS
-       -------------------------- */
     @media (max-width: 768px) {
 
       .dashboard-grid,
@@ -752,19 +767,406 @@
         gap: 1rem;
       }
     }
+
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── AI PANELS ─────────────────────────────────── */
+    .ai-panel {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ai-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-md);
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(108, 92, 231, 0.6), rgba(232, 67, 147, 0.6));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, rgba(108, 92, 231, 0.25), rgba(232, 67, 147, 0.25));
+      color: var(--primary);
+      border: 1px solid rgba(108, 92, 231, 0.3);
+    }
+
+    .ai-text {
+      font-size: 0.97rem;
+      line-height: 1.8;
+      color: var(--text-main);
+      min-height: 3.5rem;
+    }
+
+    .ai-skeleton {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .ai-mood-orb {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      margin-left: 0.5rem;
+      box-shadow: 0 0 10px currentColor;
+      transition: all 0.5s ease;
+    }
+
+    .mood-fire {
+      color: var(--danger);
+      background: var(--danger);
+    }
+
+    .mood-stable {
+      color: var(--success);
+      background: var(--success);
+    }
+
+    .mood-ice {
+      color: var(--info);
+      background: var(--info);
+    }
+
+    .ai-toast-reactor {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(11, 15, 25, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(108, 92, 231, 0.4);
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: white;
+      box-shadow: 0 10px 40px rgba(108, 92, 231, 0.4);
+      font-weight: 500;
+      opacity: 0;
+      z-index: 9999;
+      pointer-events: none;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 90%;
+      text-align: center;
+    }
+
+    .ai-toast-reactor.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .ai-toast-reactor i {
+      color: var(--primary);
+      font-size: 1.5rem;
+      animation: pulse 2s infinite;
+    }
+
+    /* ── AI CHAT WIDGET ────────────────────────────── */
+    #ai-chat-widget {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 1500;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1rem;
+    }
+
+    #ai-chat-bubble {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--gradient-brand);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(108, 92, 231, 0.5);
+      transition: var(--trans-smooth);
+      position: relative;
+    }
+
+    #ai-chat-bubble:hover {
+      transform: scale(1.1);
+    }
+
+    #ai-chat-bubble .pulse {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      background: var(--warning);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      border: 2px solid var(--bg-dark);
+    }
+
+    #ai-chat-window {
+      width: 350px;
+      height: 450px;
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transform-origin: bottom right;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #ai-chat-window.hidden {
+      transform: scale(0) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #ai-chat-widget.open #ai-chat-bubble {
+      display: none;
+    }
+
+    .chat-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-glass);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .chat-msg {
+      max-width: 85%;
+      padding: 0.8rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .chat-msg.user {
+      align-self: flex-end;
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-msg.ai {
+      align-self: flex-start;
+      background: linear-gradient(135deg, rgba(108, 92, 231, 0.2), rgba(232, 67, 147, 0.2));
+      border: 1px solid rgba(108, 92, 231, 0.3);
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-input-area {
+      padding: 1rem;
+      border-top: 1px solid var(--border-glass);
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      outline: none;
+    }
+
+    .chat-input-area button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--trans-fast);
+    }
+
+    .chat-input-area button:hover {
+      background: var(--primary-hover);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      #ai-chat-window {
+        width: calc(100vw - 2rem);
+        height: 60vh;
+      }
+
+      #ai-chat-widget {
+        bottom: 1rem;
+        right: 1rem;
+      }
+    }
+
+    .ai-skeleton-line {
+      height: 14px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .ai-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+
+    .ai-stat {
+      text-align: center;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-glass);
+    }
+
+    .ai-stat-val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .ai-stat-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* ── STRUCTURED FORM ───────────────────────────── */
+    .form-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .form-row>* {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .price-input-wrap {
+      position: relative;
+    }
+
+    .price-input-wrap input {
+      padding-right: 3.5rem;
+    }
+
+    .price-currency-badge {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--success);
+      background: rgba(16, 185, 129, 0.15);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    [dir="rtl"] .price-input-wrap input {
+      padding-right: 1rem;
+      padding-left: 3.5rem;
+    }
+
+    [dir="rtl"] .price-currency-badge {
+      right: auto;
+      left: 0.75rem;
+    }
+
+    /* feedback card shown after submission */
+    #submit-feedback {
+      display: none;
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      background: rgba(108, 92, 231, 0.1);
+      border: 1px solid rgba(108, 92, 231, 0.3);
+      margin-top: 1rem;
+    }
+
+    #submit-feedback p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+      }
+
+      .ai-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%236c5ce7' d='M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 138.5c15.8-15.8 41.4-15.8 57.2 0L336 196.8 464.5 68.5c6.6-6.6 17.4-6.6 24 0l23.5 23.5c6.6 6.6 6.6 17.4 0 24L364.5 259.5c-15.8 15.8-41.4 15.8-57.2 0L249 201.2 64 386.2V464c0 8.8 7.2 16 16 16h432c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16H112V128c0-8.8-7.2-16-16-16H64z'/></svg>" />
+
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%236c5ce7' d='M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 138.5c15.8-15.8 41.4-15.8 57.2 0L336 196.8 464.5 68.5c6.6-6.6 17.4-6.6 24 0l23.5 23.5c6.6 6.6 6.6 17.4 0 24L364.5 259.5c-15.8 15.8-41.4 15.8-57.2 0L249 201.2 64 386.2V464c0 8.8 7.2 16 16 16h432c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16H112V128c0-8.8-7.2-16-16-16H64z'/></svg>" />
 </head>
 
 <body>
-  <!-- Toast Notification Container -->
-  <div id="toast-container" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:10px;"></div>
 
-  <!-- ================= HEADER ================= -->
+  <div id="toast-container"
+    style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:10px;">
+  </div>
+
   <header id="main-header">
     <div class="container nav-inner">
       <div class="logo" onclick="app.navigate('home')">
@@ -772,44 +1174,47 @@
         <span>Waffarly<span style="color:var(--primary)">.</span></span>
       </div>
 
-      <div style="display:flex; align-items:center; gap:1rem;">
-        <button class="btn btn-primary" onclick="app.openModal('report-modal')" style="padding: 0.5rem 1rem; font-size: 0.9rem; white-space:nowrap;"><i class="fa-solid fa-plus"></i> Report Price</button>
-        <button class="mobile-menu-btn" style="position:static;" onclick="document.getElementById('nav-links').classList.toggle('active')">
+      <div style="display:flex; align-items:center; gap:0.6rem;">
+        <button class="lang-toggle" id="lang-toggle" onclick="app.toggleLanguage()">عربي</button>
+        <button class="btn btn-primary" onclick="app.openModal('report-modal')"
+          style="padding: 0.5rem 1rem; font-size: 0.9rem; white-space:nowrap;">
+          <i class="fa-solid fa-plus"></i> <span data-i18n="reportPrice">Report Price</span>
+        </button>
+        <button class="mobile-menu-btn" style="position:static;"
+          onclick="document.getElementById('nav-links').classList.toggle('active')">
           <i class="fa-solid fa-bars"></i>
         </button>
       </div>
 
       <ul class="nav-links" id="nav-links">
-        <li><a onclick="app.navigate('home')" class="active" id="nav-home">Home</a></li>
-        <li><a onclick="app.navigate('leaderboard')" id="nav-leaderboard">Leaderboard</a></li>
+        <li><a onclick="app.navigate('home')" class="active" id="nav-home" data-i18n="home">Home</a></li>
+        <li><a onclick="app.navigate('leaderboard')" id="nav-leaderboard" data-i18n="leaderboard">Leaderboard</a></li>
       </ul>
     </div>
   </header>
 
-  <!-- ================= TICKER (Global) ================= -->
   <div class="ticker-wrap" id="global-ticker"
     style="display:none; margin:0; position:fixed; top:70px; z-index:900; background:rgba(15, 23, 42, 0.9); backdrop-filter:blur(8px);">
-    <div class="ticker" id="ticker-content">
-      <!-- Dynamic Ticker populated by JS -->
-    </div>
-    <!-- duplicated for smooth infinite scroll -->
+    <div class="ticker" id="ticker-content"></div>
     <div class="ticker" id="ticker-content-clone"></div>
   </div>
 
-  <!-- ================= MAIN APP CONTAINER ================= -->
   <main id="app-container" class="container">
 
-    <!-- ---------------- HOME VIEW ---------------- -->
+    <!-- HOME VIEW -->
     <div id="view-home" class="view">
-
       <section class="hero">
-        <h1>Track Real-Time Prices Across <span class="text-gradient">Egypt</span></h1>
-        <p>Egypt’s first crowdsourced price tracker for everyday consumer goods. Find the cheapest stores near you and
-          beat inflation.</p>
+        <h1 data-i18n="heroTitle">Track Real-Time Prices Across <span class="text-gradient">Egypt</span></h1>
+        <p data-i18n="heroSub">Egypt's first crowdsourced price tracker for everyday consumer goods. Find the cheapest
+          stores near you and beat inflation.</p>
         <div class="search-box" style="position:relative;">
-          <input type="text" placeholder="Search for items... (e.g. Arroz, Milk, Sugar)" id="search-input" onkeyup="if(event.key==='Enter') { document.getElementById('search-suggestions').style.display='none'; app.navigate('item', {slug: this.value.trim().toLowerCase()}); } else app.showSuggestions(this.value);" autocomplete="off">
+          <!-- FIX #5: Removed duplicate onkeyup inline handler; handled solely via addEventListener in init() -->
+          <input type="text" data-i18n-placeholder="searchPlaceholder"
+            placeholder="Search for items... (e.g. Arroz, Milk, Sugar)" id="search-input" autocomplete="off">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <div id="search-suggestions" class="glass" style="display:none; position:absolute; top:calc(100% + 10px); left:0; width:100%; border-radius:12px; max-height:250px; overflow-y:auto; z-index:1000; flex-direction:column; padding:0.5rem; text-align:left;"></div>
+          <div id="search-suggestions" class="glass"
+            style="display:none; position:absolute; top:calc(100% + 10px); left:0; width:100%; border-radius:12px; max-height:250px; overflow-y:auto; z-index:1000; flex-direction:column; padding:0.5rem; text-align:left;">
+          </div>
         </div>
       </section>
 
@@ -818,11 +1223,82 @@
         <div class="ticker" id="hero-ticker-clone"></div>
       </div>
 
+      <!-- AI MARKET INTELLIGENCE — full width above dashboard -->
+      <section id="ai-market-section" style="margin-bottom:2rem;">
+        <div class="glass ai-panel">
+          <div class="panel-header">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <i class="fa-solid fa-brain" style="color:var(--primary); font-size:1.1rem;"></i>
+              <h3 style="margin:0;" data-i18n="aiMarketTitle">AI Market Intelligence</h3>
+              <span class="ai-badge"><i class="fa-solid fa-circle" style="font-size:0.45rem; color:var(--success);"></i>
+                <span data-i18n="aiLive">Live</span></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span id="ai-brief-ts" style="font-size:0.75rem; color:var(--text-muted);"></span>
+              <button class="btn btn-outline" id="ai-refresh-btn" onclick="app.refreshMarketBrief()"
+                style="padding:0.3rem 0.8rem; font-size:0.8rem; gap:0.4rem;">
+                <i class="fa-solid fa-rotate"></i> <span data-i18n="aiRefresh">Refresh</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <!-- Stats row -->
+            <div class="ai-stat-grid">
+              <div class="ai-stat">
+                <div class="ai-stat-val" id="ai-stat-reports">—</div>
+                <div class="ai-stat-label" data-i18n="aiStatReports">Reports Today</div>
+              </div>
+              <div class="ai-stat">
+                <div class="ai-stat-val" id="ai-stat-items">—</div>
+                <div class="ai-stat-label" data-i18n="aiStatItems">Unique Items</div>
+              </div>
+              <div class="ai-stat">
+                <div class="ai-stat-val" id="ai-stat-areas">—</div>
+                <div class="ai-stat-label" data-i18n="aiStatAreas">Areas Covered</div>
+              </div>
+            </div>
+
+            <!-- Best Deal card — only shown when anomaly='deal' exists -->
+            <div id="best-deal-card" style="display:none; margin-top:1.25rem; padding:1rem;
+              background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(16,185,129,0.04));
+              border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-sm);">
+              <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+                <div style="display:flex; align-items:center; gap:0.6rem;">
+                  <span style="font-size:1.2rem;">🔥</span>
+                  <div>
+                    <div
+                      style="font-size:0.72rem; color:var(--success); font-weight:700; text-transform:uppercase; letter-spacing:0.05em;"
+                      data-i18n="bestDealLabel">Best Deal Right Now</div>
+                    <div style="font-weight:700;" id="bd-item">—</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);" id="bd-store">—</div>
+                  </div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:1.5rem; font-weight:800; color:var(--success);" id="bd-price">—</div>
+                  <div style="font-size:0.75rem; color:var(--success);" id="bd-save">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI narrative -->
+            <div style="margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid var(--border-glass);">
+              <div id="ai-market-brief">
+                <div class="ai-skeleton">
+                  <div class="ai-skeleton-line" style="width:100%;"></div>
+                  <div class="ai-skeleton-line" style="width:85%;"></div>
+                  <div class="ai-skeleton-line" style="width:92%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="dashboard-grid">
-        <!-- Live Heatmap -->
         <div class="glass flex-col">
           <div class="panel-header">
-            <h3><i class="fa-solid fa-map-location-dot"></i> Live Price Heatmap</h3>
+            <h3><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="liveHeatmap">Live Price Heatmap</span>
+            </h3>
             <span class="badge success">Live</span>
           </div>
           <div class="map-container">
@@ -830,48 +1306,45 @@
           </div>
         </div>
 
-        <!-- Sidebar (Categories & Inflation) -->
         <div class="flex-col" style="display:flex; flex-direction:column; gap:2rem;">
-
           <div class="glass">
             <div class="panel-header">
-              <h3>Categories</h3>
+              <h3 data-i18n="categories">Categories</h3>
             </div>
             <div class="panel-body category-grid">
               <div class="glass glass-hover category-card" onclick="app.openCategoryModal('Food')">
                 <i class="fa-solid fa-bowl-rice"></i>
-                <div>Food</div>
+                <div data-i18n="food">Food</div>
               </div>
               <div class="glass glass-hover category-card" onclick="app.openCategoryModal('Household')">
                 <i class="fa-solid fa-jug-detergent"></i>
-                <div>Household</div>
+                <div data-i18n="household">Household</div>
               </div>
               <div class="glass glass-hover category-card" onclick="app.openCategoryModal('Medicine')">
                 <i class="fa-solid fa-pills"></i>
-                <div>Medicine</div>
+                <div data-i18n="medicine">Medicine</div>
               </div>
               <div class="glass glass-hover category-card" onclick="app.openCategoryModal('Fuel')">
                 <i class="fa-solid fa-gas-pump"></i>
-                <div>Fuel</div>
+                <div data-i18n="fuel">Fuel</div>
               </div>
             </div>
           </div>
 
           <div class="glass inflation-card panel-body">
-            <h3>Egypt CPI Indicator</h3>
+            <h3 data-i18n="cpiIndicator">Egypt CPI Indicator</h3>
             <div class="inflation-val">+29.8%</div>
-            <p>Annual Inflation Rate (Est.)</p>
+            <p data-i18n="annualInflation">Annual Inflation Rate (Est.)</p>
             <div
               style="margin-top:1rem; height:8px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden;">
               <div style="width:75%; height:100%; background:var(--danger);"></div>
             </div>
           </div>
-
         </div>
       </section>
     </div>
 
-    <!-- ---------------- ITEM VIEW ---------------- -->
+    <!-- ITEM VIEW -->
     <div id="view-item" class="view hidden">
       <div class="item-header">
         <div class="item-title">
@@ -885,13 +1358,18 @@
           </div>
         </div>
         <div style="display:flex; gap:1rem; align-items:center;">
-          <span style="background:var(--surface-glass); color:var(--text-muted); padding:0.5rem 1rem; border-radius:2rem; border:1px solid var(--border-glass); display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; white-space:nowrap;"><i class="fa-regular fa-bell"></i> Alerts (Coming Soon)</span>
-          <button class="btn btn-primary" onclick="app.openModal('report-modal')" style="white-space:nowrap; padding:0.5rem 1rem; font-size:0.9rem;"><i class="fa-solid fa-plus"></i> Report Price</button>
+          <span
+            style="background:var(--surface-glass); color:var(--text-muted); padding:0.5rem 1rem; border-radius:2rem; border:1px solid var(--border-glass); display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; white-space:nowrap;">
+            <i class="fa-regular fa-bell"></i> Alerts (Coming Soon)
+          </span>
+          <button class="btn btn-primary" onclick="app.openModal('report-modal')"
+            style="white-space:nowrap; padding:0.5rem 1rem; font-size:0.9rem;">
+            <i class="fa-solid fa-plus"></i> Report Price
+          </button>
         </div>
       </div>
 
       <div class="item-grid">
-        <!-- Main Chart -->
         <div class="glass">
           <div class="panel-header">
             <h3>Price Trend (Last 30 Days)</h3>
@@ -903,7 +1381,6 @@
           </div>
         </div>
 
-        <!-- Cheaper Stores & Maps -->
         <div style="display:flex; flex-direction:column; gap:2rem;">
           <div class="glass">
             <div class="panel-header">
@@ -914,6 +1391,25 @@
             </div>
           </div>
 
+          <!-- AI Price Intelligence -->
+          <div class="glass ai-panel" id="ai-item-panel" style="display:none;">
+            <div class="panel-header">
+              <div style="display:flex; align-items:center; gap:0.6rem;">
+                <i class="fa-solid fa-brain" style="color:var(--primary);"></i>
+                <h3 style="margin:0;" data-i18n="aiItemTitle">AI Price Intelligence</h3>
+              </div>
+              <span class="ai-badge"><i class="fa-solid fa-sparkles"></i> AI</span>
+            </div>
+            <div class="panel-body">
+              <div id="ai-item-content">
+                <div class="ai-skeleton">
+                  <div class="ai-skeleton-line" style="width:100%;"></div>
+                  <div class="ai-skeleton-line" style="width:80%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="glass" style="height:250px; overflow:hidden;">
             <div id="item-map"></div>
           </div>
@@ -921,59 +1417,87 @@
       </div>
     </div>
 
-    <!-- ---------------- LEADERBOARD VIEW ---------------- -->
+    <!-- LEADERBOARD VIEW -->
     <div id="view-leaderboard" class="view hidden">
       <div style="text-align:center; padding: 4rem 0 2rem;">
-        <h1>Top Reporters</h1>
-        <p style="color:var(--text-muted);">Help the community beat inflation and earn badges.</p>
+        <h1 data-i18n="topReporters">Top Reporters</h1>
+        <p style="color:var(--text-muted);" data-i18n="leaderboardSub">Help the community beat inflation and earn
+          badges.</p>
       </div>
 
       <div class="glass" style="max-width:800px; margin:0 auto; padding:2rem;">
         <div
           style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-glass); padding-bottom:1rem;">
-          <h3 style="margin:0;">This Week</h3>
-          <span class="badge success" style="display:flex; align-items:center;">Live Updates</span>
+          <h3 style="margin:0;" data-i18n="thisWeek">This Week</h3>
+          <span class="badge success" style="display:flex; align-items:center;" data-i18n="liveUpdates">Live
+            Updates</span>
         </div>
-
         <div class="leaderboard-list">
-          <p style="text-align:center; color:var(--text-muted); padding:2rem;">Community leaderboard syncing active...</p>
+          <p style="text-align:center; color:var(--text-muted); padding:2rem;">Community leaderboard syncing active...
+          </p>
         </div>
       </div>
     </div>
 
   </main>
 
+  <!-- MODALS -->
 
-  <!-- ================= MODALS ================= -->
-
-  <!-- Report Modal -->
+  <!-- Report Modal — structured separate fields, no AI parsing needed -->
   <div class="modal-overlay" id="report-modal">
     <div class="glass modal-content">
       <button class="modal-close" onclick="app.closeModal('report-modal')">&times;</button>
       <div class="panel-header">
-        <h3>Report a Price</h3>
+        <h3 data-i18n="reportAPrice">Report a Price</h3>
+        <span class="ai-badge"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="accurateData">Accurate
+            Data</span></span>
       </div>
       <div class="panel-body">
 
-        <div class="form-group" style="display:flex; gap:1rem;">
-          <div style="flex:1;">
-            <label>Item Name & Price</label>
-            <input type="text" id="report-item" class="form-control" placeholder="e.g. Arroz 1kg for 32.50 EGP">
+        <!-- Row 1: Item + Price -->
+        <div class="form-row">
+          <div class="form-group" style="margin-bottom:0;">
+            <label data-i18n="fieldItem">Item Name</label>
+            <input type="text" id="f-item" class="form-control" data-i18n-placeholder="phItem"
+              placeholder="e.g. Bananas 1kg">
           </div>
-          <div style="width:140px;">
-            <label>Your Name</label>
-            <input type="text" id="report-name" class="form-control" placeholder="Optional">
+          <div class="form-group" style="margin-bottom:0; max-width:140px;">
+            <label data-i18n="fieldPrice">Price</label>
+            <div class="price-input-wrap">
+              <input type="number" id="f-price" class="form-control" min="0" step="0.5" data-i18n-placeholder="phPrice"
+                placeholder="35">
+              <span class="price-currency-badge">EGP</span>
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Detailed Location</label>
-          <textarea id="report-loc" class="form-control"
-            placeholder="Please explain exactly where this store is (e.g., 'Next to the main mosque in downtown, 5th street, Carrefour Express')"></textarea>
+        <!-- Row 2: Store + Area -->
+        <div class="form-row" style="margin-top:1rem;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label data-i18n="fieldStore">Store / Shop Name</label>
+            <input type="text" id="f-store" class="form-control" data-i18n-placeholder="phStore"
+              placeholder="e.g. Carrefour, Fruit Cart">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label data-i18n="fieldArea">Area / Location</label>
+            <input type="text" id="f-area" class="form-control" data-i18n-placeholder="phArea"
+              placeholder="e.g. Maadi, Suez Bridge">
+          </div>
         </div>
 
-        <button class="btn btn-primary" style="width:100%; margin-top:1rem;" onclick="app.submitReport()">Submit to
-          Waffarly Database</button>
+        <!-- Row 3: Your name -->
+        <div class="form-group" style="margin-top:1rem;">
+          <label data-i18n="yourName">Your Name <span style="color:var(--text-muted); font-weight:400;"
+              data-i18n="optional">(Optional)</span></label>
+          <input type="text" id="f-name" class="form-control" data-i18n-placeholder="optionalPlaceholder"
+            placeholder="Optional">
+        </div>
+
+
+        <button class="btn btn-primary" id="submit-report-btn" style="width:100%; margin-top:1.25rem;"
+          onclick="app.submitReport()" data-i18n="submitBtn">
+          Submit to Waffarly Database
+        </button>
 
       </div>
     </div>
@@ -989,12 +1513,10 @@
       <div class="panel-body">
         <p style="margin-bottom:1.5rem; color:var(--text-muted); font-size:0.9rem;">We'll notify you when the price of
           this item drops below your target.</p>
-
         <div class="form-group">
           <label>Target Price (EGP)</label>
           <input type="number" class="form-control" placeholder="e.g. 30">
         </div>
-
         <div class="form-group">
           <label>Area (Optional)</label>
           <select class="form-control">
@@ -1005,40 +1527,232 @@
             <option>Giza</option>
           </select>
         </div>
-
         <div class="form-group">
           <label>Notification Email</label>
           <input type="email" class="form-control" placeholder="your@email.com">
         </div>
-
         <button class="btn btn-primary" style="width:100%;" onclick="app.submitAlert()">Create Alert</button>
-
       </div>
     </div>
   </div>
 
-  <!-- Category Selection Modal -->
+  <!-- Category Modal -->
   <div class="modal-overlay" id="category-modal">
     <div class="glass modal-content">
       <button class="modal-close" onclick="app.closeModal('category-modal')">&times;</button>
       <div class="panel-header">
         <h3 id="cat-modal-title">Select Item</h3>
       </div>
-      <div class="panel-body" id="cat-modal-body" style="display:flex; flex-direction:column; gap:0.5rem; max-height:400px; overflow-y:auto;">
+      <div class="panel-body" id="cat-modal-body"
+        style="display:flex; flex-direction:column; gap:0.5rem; max-height:400px; overflow-y:auto;">
       </div>
     </div>
   </div>
 
-  <!-- Chart.js CDN -->
+  <!-- Ask Waffarly AI Widget -->
+  <div id="ai-chat-widget">
+    <div id="ai-chat-bubble" onclick="app.toggleChat()">
+      <i class="fa-solid fa-chart-line" style="color:white;"></i>
+    </div>
+    <div id="ai-chat-window" class="glass hidden">
+      <div class="chat-header">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <i class="fa-solid fa-brain" style="color:var(--primary);"></i>
+          <strong>Ask Waffarly AI</strong>
+        </div>
+        <button class="modal-close" style="position:static;" onclick="app.toggleChat()">&times;</button>
+      </div>
+      <div id="ai-chat-messages" class="chat-body">
+        <div class="chat-msg ai">Hello! I'm your Waffarly AI assistant. Ask me anything about current prices or market
+          trends!</div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" id="ai-chat-input" placeholder="Ask about prices..."
+          onkeypress="if(event.key==='Enter') app.sendChatMessage()">
+        <button onclick="app.sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js" crossorigin="anonymous"></script>
-  <!-- Leaflet CDN -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <script>
-    /**
-     * Waffarly Application Logic
-     * Handles SPA Routing, Maps, Charts, and mock Google Sheet Data polling.
-     */
+    const SHEET_URL = "https://script.google.com/macros/s/AKfycbxoQ5G8CGDUqRFK-0JSFj1Hkge6pBbxhfBNoZDeZtcFVNddvjPMFDXf-svFXaaa1AOxsg/exec";
+    // No Groq key in the browser — proxied through Apps Script.
+    // Uses POST so the prompt body isn't limited by URL length.
+    // The frontend builds the prompt context from data it already has,
+    // so the Apps Script only needs to do one thing: call Groq.
+    async function callAI(promptText, lang) {
+      try {
+        const body = JSON.stringify({ action: 'ai', prompt: promptText, lang });
+        const res = await fetch(SHEET_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body
+        });
+        const data = await res.json();
+        return data.text || '';
+      } catch (e) {
+        console.error('AI proxy error:', e);
+        return '';
+      }
+    }
+
+    // -------------------------------------------------------
+    // BILINGUAL DICTIONARY
+    // Items are stored in English (Groq translates on submit).
+    // When a user searches in Arabic, we map to English equivalents
+    // so they still find the matching English-stored entries.
+    // Both directions are handled so EN→AR and AR→EN both work.
+    // -------------------------------------------------------
+    const BILINGUAL_MAP = {
+      // Fruits
+      'موز': 'banana', 'بنان': 'banana',
+      'تفاح': 'apple',
+      'برتقال': 'orange',
+      'فراولة': 'strawberry',
+      'عنب': 'grape',
+      'مانجو': 'mango',
+      'بطيخ': 'watermelon',
+      'شمام': 'melon',
+      'خوخ': 'peach',
+      'كمثرى': 'pear',
+      'ليمون': 'lemon',
+      // Vegetables
+      'طماطم': 'tomato', 'طماطة': 'tomato', 'بندورة': 'tomato',
+      'بطاطس': 'potato', 'بطاطا': 'potato',
+      'بصل': 'onion',
+      'ثوم': 'garlic',
+      'خيار': 'cucumber',
+      'فلفل': 'pepper',
+      'كوسا': 'zucchini',
+      'باذنجان': 'eggplant',
+      'جزر': 'carrot',
+      'خس': 'lettuce',
+      'ملفوف': 'cabbage', 'كرنب': 'cabbage',
+      'بروكلي': 'broccoli',
+      'بازلاء': 'peas',
+      'فول': 'fava beans',
+      'عدس': 'lentils',
+      // Staples
+      'أرز': 'rice', 'ارز': 'rice',
+      'سكر': 'sugar',
+      'ملح': 'salt',
+      'دقيق': 'flour',
+      'خبز': 'bread', 'عيش': 'bread',
+      'مكرونة': 'pasta',
+      'شعرية': 'vermicelli',
+      // Dairy & Protein
+      'لبن': 'milk', 'حليب': 'milk',
+      'جبنة': 'cheese', 'جبن': 'cheese',
+      'زبدة': 'butter',
+      'بيض': 'egg', 'بيضة': 'egg',
+      'دجاج': 'chicken',
+      'لحم': 'meat', 'لحمة': 'meat',
+      'سمك': 'fish',
+      'جمبري': 'shrimp',
+      // Oils & Condiments
+      'زيت': 'oil',
+      'خل': 'vinegar',
+      'كاتشب': 'ketchup',
+      'مايونيز': 'mayonnaise',
+      // Beverages
+      'مياه': 'water', 'ماية': 'water', 'مية': 'water',
+      'شاي': 'tea',
+      'قهوة': 'coffee',
+      'عصير': 'juice',
+      'بيبسي': 'pepsi', 'كولا': 'cola',
+      // Household
+      'صابون': 'soap',
+      'منظف': 'detergent', 'مسحوق': 'detergent', 'ويم': 'detergent',
+      'مناديل': 'tissue',
+      'شامبو': 'shampoo',
+      'معجون': 'toothpaste',
+      'كلور': 'bleach',
+      'مطهر': 'disinfectant',
+      // Fuel
+      'بنزين': 'gasoline',
+      'سولار': 'diesel',
+      'غاز': 'gas',
+      // Medicine
+      'دواء': 'medicine',
+      'مسكن': 'painkiller',
+      'بنادول': 'panadol',
+      'أسبرين': 'aspirin',
+      'فيتامين': 'vitamin',
+      // English → Arabic (reverse side, for AR UI users searching in EN)
+      'banana': 'موز', 'bananas': 'موز',
+      'apple': 'تفاح', 'apples': 'تفاح',
+      'orange': 'برتقال',
+      'tomato': 'طماطم', 'tomatoes': 'طماطم',
+      'potato': 'بطاطس', 'potatoes': 'بطاطس',
+      'onion': 'بصل', 'onions': 'بصل',
+      'garlic': 'ثوم',
+      'rice': 'أرز',
+      'sugar': 'سكر',
+      'salt': 'ملح',
+      'flour': 'دقيق',
+      'bread': 'خبز',
+      'milk': 'لبن',
+      'cheese': 'جبنة',
+      'butter': 'زبدة',
+      'egg': 'بيض', 'eggs': 'بيض',
+      'chicken': 'دجاج',
+      'meat': 'لحم',
+      'fish': 'سمك',
+      'oil': 'زيت',
+      'water': 'مياه',
+      'tea': 'شاي',
+      'coffee': 'قهوة',
+      'soap': 'صابون',
+      'detergent': 'منظف',
+      'tissue': 'مناديل',
+      'shampoo': 'شامبو',
+      'bleach': 'كلور',
+      'gasoline': 'بنزين',
+      'diesel': 'سولار',
+      'gas': 'غاز',
+      'medicine': 'دواء',
+      'panadol': 'بنادول',
+      'aspirin': 'أسبرين',
+      'vitamin': 'فيتامين',
+    };
+
+    const GEO_MAP = {
+      "maadi": [29.9602, 31.2569], "zayed": [30.0450, 30.9850], "zamalek": [30.0626, 31.2222],
+      "new cairo": [30.0211, 31.4645], "giza": [30.0131, 31.2089], "downtown": [30.0444, 31.2357],
+      "shubra": [30.1286, 31.2422], "heliopolis": [30.0911, 31.3283], "nasr city": [30.0559, 31.3323],
+      "mohandeseen": [30.0553, 31.1983], "dokki": [30.0381, 31.2112], "rehab": [30.0526, 31.4880],
+      "madinaty": [30.0825, 31.6033], "october": [29.9381, 30.9136],
+      "suez bridge": [30.0100, 31.3200], "zeitoun": [30.1022, 31.3197], "ain shams": [30.1167, 31.3333]
+    };
+
+    // Returns all terms to match for a query — handles AR↔EN translation
+    function getSearchTerms(query) {
+      const q = query.trim().toLowerCase();
+      const terms = new Set([q]);
+
+      // Direct lookup in map
+      if (BILINGUAL_MAP[q]) terms.add(BILINGUAL_MAP[q].toLowerCase());
+
+      // Partial-key scan: if query appears inside any key/value, add both sides
+      for (const [ar, en] of Object.entries(BILINGUAL_MAP)) {
+        if (ar.includes(q) || en.toLowerCase().includes(q)) {
+          terms.add(ar.toLowerCase());
+          terms.add(en.toLowerCase());
+        }
+      }
+
+      return [...terms];
+    }
+
+    // Returns true if an item string matches any of the bilingual search terms
+    function itemMatchesQuery(itemStr, query) {
+      const terms = getSearchTerms(query);
+      const lower = itemStr.toLowerCase();
+      return terms.some(t => lower.includes(t));
+    }
 
     const app = {
       state: {
@@ -1046,77 +1760,197 @@
         userName: '',
         currentView: 'home',
         currentItem: null,
-        reports: [],
         mapHome: null,
+        mapHomeCircleLayer: null, // FIX #3: track circle layer for clearing
         mapItem: null,
-        chartInstance: null
+        chartInstance: null,
+        lang: 'en',
+        suggestDebounceTimer: null  // debounce only for search suggestions
       },
 
-      // --- LIVE API (Google Sheets) ---
+      i18n: {
+        en: {
+          home: 'Home', leaderboard: 'Leaderboard', reportPrice: 'Report Price',
+          heroTitle: 'Track Real-Time Prices Across <span class="text-gradient">Egypt</span>',
+          heroSub: "Egypt's first crowdsourced price tracker for everyday consumer goods.",
+          searchPlaceholder: 'Search for items... (e.g. Bananas, Milk, Sugar)',
+          liveHeatmap: 'Live Price Heatmap', categories: 'Categories',
+          food: 'Food', household: 'Household', medicine: 'Medicine', fuel: 'Fuel',
+          cpiIndicator: 'Egypt CPI Indicator', annualInflation: 'Annual Inflation Rate (Est.)',
+          topReporters: 'Top Reporters', leaderboardSub: 'Help the community beat inflation and earn badges.',
+          thisWeek: 'This Week', liveUpdates: 'Live Updates',
+          reportAPrice: 'Report a Price',
+          // Structured form fields
+          fieldItem: 'Item Name', phItem: 'e.g. Bananas 1kg',
+          fieldPrice: 'Price', phPrice: '35',
+          fieldStore: 'Store / Shop Name', phStore: 'e.g. Carrefour, Fruit Cart',
+          fieldArea: 'Area / Location', phArea: 'e.g. Maadi, Suez Bridge',
+          yourName: 'Your Name', optional: '(Optional)',
+          optionalPlaceholder: 'Optional',
+          accurateData: 'Accurate Data',
+          submitBtn: 'Submit to Waffarly Database',
+          submitSending: 'Submitting...',
+          submitDone: 'Submitted! (+10 pts)',
+          // AI features
+          aiMarketTitle: 'AI Market Intelligence',
+          aiLive: 'Live', aiRefresh: 'Refresh',
+          aiStatReports: 'Reports Today', aiStatItems: 'Unique Items', aiStatAreas: 'Areas Covered',
+          aiItemTitle: 'AI Price Intelligence',
+          aiInsight: 'AI Insight',
+          aiInsightLoading: 'Analyzing your submission...',
+          bestDealLabel: 'Best Deal Right Now',
+          justNow: 'Just now', minsAgo: ' mins ago', hrsAgo: ' hrs ago',
+          reportedIn: 'Reported in'
+        },
+        ar: {
+          home: 'الرئيسية', leaderboard: 'قائمة المتصدرين', reportPrice: 'بلّغ عن سعر',
+          heroTitle: 'تابع الأسعار لحظة بلحظة في <span class="text-gradient">مصر</span>',
+          heroSub: 'أول منصة مصرية لتتبع أسعار السلع اليومية بالمشاركة المجتمعية.',
+          searchPlaceholder: 'ابحث عن سلعة... (مثلاً: موز، لبن، سكر)',
+          liveHeatmap: 'خريطة الأسعار الحية', categories: 'الفئات',
+          food: 'طعام', household: 'منزلية', medicine: 'أدوية', fuel: 'وقود',
+          cpiIndicator: 'مؤشر التضخم في مصر', annualInflation: 'معدل التضخم السنوي (تقديري)',
+          topReporters: 'أفضل المساهمين', leaderboardSub: 'ساعد المجتمع في مواجهة الغلاء واكسب شارات.',
+          thisWeek: 'هذا الأسبوع', liveUpdates: 'مباشر',
+          reportAPrice: 'بلّغ عن سعر',
+          // Structured form fields
+          fieldItem: 'اسم السلعة', phItem: 'مثال: موز كيلو',
+          fieldPrice: 'السعر', phPrice: '35',
+          fieldStore: 'اسم المحل', phStore: 'مثال: كارفور، عربية فاكهة',
+          fieldArea: 'المنطقة / الموقع', phArea: 'مثال: المعادي، جسر السويس',
+          yourName: 'اسمك', optional: '(اختياري)',
+          optionalPlaceholder: 'اختياري',
+          accurateData: 'بيانات دقيقة',
+          submitBtn: 'إرسال إلى قاعدة بيانات وفرلي',
+          submitSending: 'جاري الإرسال...',
+          submitDone: 'تم الإرسال! (+١٠ نقطة)',
+          // AI features
+          aiMarketTitle: 'ذكاء السوق بالـ AI',
+          aiLive: 'مباشر', aiRefresh: 'تحديث',
+          aiStatReports: 'تقارير اليوم', aiStatItems: 'سلع مختلفة', aiStatAreas: 'مناطق مُغطاة',
+          aiItemTitle: 'تحليل السعر بالـ AI',
+          aiInsight: 'تحليل AI',
+          aiInsightLoading: 'جاري تحليل تقريرك...',
+          bestDealLabel: 'أفضل عرض الآن',
+          justNow: 'الآن', minsAgo: ' دقيقة', hrsAgo: ' ساعة',
+          reportedIn: 'مبلغ عنه في'
+        }
+      },
+
+      // --- I18N ---
+      setLanguage: function (lang) {
+        this.state.lang = lang;
+        localStorage.setItem('waffarly_lang', lang);
+        const isAr = lang === 'ar';
+        document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+        document.documentElement.lang = lang;
+        const toggle = document.getElementById('lang-toggle');
+        if (toggle) toggle.innerText = isAr ? 'EN' : 'عربي';
+        const dict = this.i18n[lang];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (dict[key] !== undefined) el.innerHTML = dict[key];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          const key = el.getAttribute('data-i18n-placeholder');
+          if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+        });
+        this.updateTicker();
+      },
+
+      toggleLanguage: function () {
+        this.setLanguage(this.state.lang === 'en' ? 'ar' : 'en');
+      },
+
+      t: function (key) {
+        return this.i18n[this.state.lang][key] || this.i18n['en'][key] || key;
+      },
+
+      localizeTime: function (r) {
+        if (this.state.lang === 'en') return r.time || 'Recent';
+        const mins = r.minsRaw;
+        if (mins === undefined || mins === null) return r.time || 'حديث';
+        if (mins < 1) return this.i18n.ar.justNow;
+        if (mins < 60) return mins + this.i18n.ar.minsAgo;
+        return Math.floor(mins / 60) + this.i18n.ar.hrsAgo;
+      },
+
+      // --- API ---
       api: {
-        SHEET_URL: "https://script.google.com/macros/s/AKfycbxz-UAVPJN47xTfnmyGb42X6_IsggcEDvgxfXq9EDHlriusNB6DpMrCaWd-PPpvznq0eA/exec",
-        getLatestReports: async () => {
+        getReports: async () => {
           try {
-            const res = await fetch("https://script.google.com/macros/s/AKfycbxz-UAVPJN47xTfnmyGb42X6_IsggcEDvgxfXq9EDHlriusNB6DpMrCaWd-PPpvznq0eA/exec");
+            // Both ?t= AND cache:'no-store' are needed:
+            // ?t= busts Google's CDN redirect cache (which ignores standard headers)
+            // cache:'no-store' prevents the browser from serving a stale local copy
+            const res = await fetch(SHEET_URL + '?t=' + Date.now(), {
+              cache: 'no-store'
+            });
             return await res.json();
-          } catch(e) {
+          } catch (e) {
             console.error("Error loading feed:", e);
             return [];
           }
         },
+
         submitPrice: async (dataBody) => {
           try {
-            await fetch("https://script.google.com/macros/s/AKfycbxz-UAVPJN47xTfnmyGb42X6_IsggcEDvgxfXq9EDHlriusNB6DpMrCaWd-PPpvznq0eA/exec", {
+            await fetch(SHEET_URL, {
               method: "POST",
               headers: { "Content-Type": "text/plain;charset=utf-8" },
-              body: JSON.stringify(dataBody)
+              body: JSON.stringify(dataBody),
+              cache: 'no-store'
             });
             return { success: true };
-          } catch(e) {
+          } catch (e) {
             console.error("Error submitting price:", e);
             return { error: true };
           }
         }
       },
 
-      // --- ROUTING & NAVIGATION ---
+      // --- ROUTING ---
       init: async function () {
-        // Handle User Identity (Anonymous Session)
         if (!localStorage.getItem('waffarly_uuid')) {
           localStorage.setItem('waffarly_uuid', 'Anonymous Shopper#' + Math.floor(1000 + Math.random() * 9000));
         }
         this.state.userId = localStorage.getItem('waffarly_uuid');
         this.state.userName = localStorage.getItem('waffarly_name') || '';
 
-        // Handle navbar scroll effect
+        const savedLang = localStorage.getItem('waffarly_lang') || 'en';
+        this.setLanguage(savedLang);
+
         window.addEventListener('scroll', () => {
-          if (window.scrollY > 50) document.getElementById('main-header').classList.add('scrolled');
-          else document.getElementById('main-header').classList.remove('scrolled');
+          document.getElementById('main-header').classList.toggle('scrolled', window.scrollY > 50);
         });
 
-        // Search input binding
-        document.getElementById('search-input').addEventListener('keypress', (e) => {
+        // FIX #5: Single consolidated search handler (no duplicate)
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('keyup', (e) => {
+          const val = e.target.value.trim();
           if (e.key === 'Enter') {
-            const val = e.target.value.trim();
+            document.getElementById('search-suggestions').style.display = 'none';
             if (val) this.navigate('item', { slug: val.toLowerCase() });
+          } else {
+            this.showSuggestions(val);
           }
         });
 
-        // Initial Data load
-        this.updateTicker();
-        setInterval(() => this.updateTicker(), 15000); // Poll every 15s
+        // Close suggestions on outside click
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.search-box')) {
+            document.getElementById('search-suggestions').style.display = 'none';
+          }
+        });
 
-        // Parse hash if present
+        setInterval(() => this.updateTicker(), 15000);
+
         this.handleHashRoute();
         window.addEventListener('hashchange', () => this.handleHashRoute());
       },
 
       handleHashRoute: function () {
         const hash = window.location.hash.replace('#', '');
-        if (!hash) {
-          this.navigate('home', null, false);
-          return;
-        }
+        if (!hash || hash === 'home') { this.navigate('home', null, false); return; }
         if (hash.startsWith('item/')) {
           const slug = hash.split('/')[1];
           this.navigate('item', { slug: decodeURIComponent(slug) }, false);
@@ -1126,158 +1960,464 @@
       },
 
       navigate: function (viewId, params = null, pushState = true) {
-        // Hide all views
         document.querySelectorAll('.view').forEach(el => el.classList.add('hidden'));
-
-        // Update nav links
         document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
         const navEl = document.getElementById('nav-' + viewId);
         if (navEl) navEl.classList.add('active');
-
-        // Close mobile menu if open
         document.getElementById('nav-links').classList.remove('active');
 
-        // Show requested view
         const targetView = document.getElementById('view-' + viewId);
-        if (targetView) {
-          targetView.classList.remove('hidden');
-          this.state.currentView = viewId;
+        if (!targetView) return;
 
-          // View Specific logic
-          if (viewId === 'home') {
-            if (pushState) window.history.pushState(null, null, '#home');
-            document.getElementById('global-ticker').style.display = 'none';
-            document.getElementById('app-container').style.paddingTop = '80px';
-            this.initHomeMap();
-          }
-          else if (viewId === 'item') {
-            if (pushState) window.history.pushState(null, null, '#item/' + (params?.slug || 'arroz'));
-            document.getElementById('global-ticker').style.display = 'flex';
-            document.getElementById('app-container').style.paddingTop = '130px';
-            this.loadItemData(params?.slug || 'arroz');
-          }
-          else if (viewId === 'leaderboard') {
-            if (pushState) window.history.pushState(null, null, '#leaderboard');
-            document.getElementById('global-ticker').style.display = 'none';
-            document.getElementById('app-container').style.paddingTop = '80px';
-            if (this.updateLeaderboard) this.updateLeaderboard();
-          }
+        targetView.classList.remove('hidden');
+        this.state.currentView = viewId;
+
+        if (viewId === 'home') {
+          if (pushState) window.history.pushState(null, null, '#home');
+          document.getElementById('global-ticker').style.display = 'none';
+          document.getElementById('app-container').style.paddingTop = '80px';
+          this.initHomeMap();
+          this.refreshMarketBrief(); // ← trigger AI market brief on home load
+        } else if (viewId === 'item') {
+          if (pushState) window.history.pushState(null, null, '#item/' + encodeURIComponent(params?.slug || 'arroz'));
+          document.getElementById('global-ticker').style.display = 'flex';
+          document.getElementById('app-container').style.paddingTop = '130px';
+          this.loadItemData(params?.slug || 'arroz');
+        } else if (viewId === 'leaderboard') {
+          if (pushState) window.history.pushState(null, null, '#leaderboard');
+          document.getElementById('global-ticker').style.display = 'none';
+          document.getElementById('app-container').style.paddingTop = '80px';
+          this.updateLeaderboard();
         }
       },
 
-      // --- TICKER LOGIC ---
+      // ── AI MARKET BRIEF ──────────────────────────────────────────
+      // Fetches live reports, computes stats, calls Groq for a 3-sentence
+      // market intelligence paragraph. Only uses data it can see — no hallucination.
+      refreshMarketBrief: async function () {
+        const btn = document.getElementById('ai-refresh-btn');
+        if (btn) { btn.disabled = true; btn.querySelector('i').classList.add('fa-spin'); }
+
+        document.getElementById('ai-market-brief').innerHTML = `
+          <div class="ai-skeleton">
+            <div class="ai-skeleton-line" style="width:100%;"></div>
+            <div class="ai-skeleton-line" style="width:88%;"></div>
+            <div class="ai-skeleton-line" style="width:94%;"></div>
+          </div>`;
+
+        try {
+          const reports = await this.api.getReports();
+          const isAr = this.state.lang === 'ar';
+
+          if (reports.length === 0) {
+            document.getElementById('ai-market-brief').innerHTML =
+              `<p class="ai-text" style="color:var(--text-muted);">${isAr ? 'لا توجد تقارير بعد. كن أول من يساهم!' : 'No reports yet. Be the first to contribute!'}</p>`;
+            return;
+          }
+
+          // Compute live stats locally (no AI needed)
+          const uniqueItems = new Set(reports.map(r => r.item).filter(Boolean));
+          const uniqueAreas = new Set(reports.map(r => r.loc).filter(Boolean));
+          const todayCount = reports.filter(r => (r.minsRaw || 9999) < 1440).length;
+          const dealCount = reports.filter(r => r.anomaly === 'deal').length;
+
+          const s = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+          s('ai-stat-reports', todayCount || reports.length);
+          s('ai-stat-items', uniqueItems.size);
+          s('ai-stat-areas', uniqueAreas.size);
+
+          // Update best deal card
+          const bestDeal = reports.find(r => r.anomaly === 'deal');
+          const bdEl = document.getElementById('best-deal-card');
+          if (bdEl && bestDeal) {
+            bdEl.style.display = 'block';
+            document.getElementById('bd-item').textContent = bestDeal.item;
+            document.getElementById('bd-price').textContent = bestDeal.price.toFixed(2) + ' EGP';
+            document.getElementById('bd-store').textContent = bestDeal.store + ' · ' + bestDeal.loc;
+            document.getElementById('bd-save').textContent =
+              Math.abs(bestDeal.pctDev) + '% below avg';
+          }
+
+          // Build prompt from data the frontend already has — no re-read needed
+          const summary = reports.slice(0, 20).map(r =>
+            `${r.item} — ${r.price.toFixed(2)} EGP — ${r.store} — ${r.loc}`
+          ).join('\n');
+
+          const lang = isAr ? 'Arabic' : 'English';
+          const prompt =
+            `You are a senior consumer-market analyst specialising in Egyptian retail pricing. You think like a Bloomberg Intelligence analyst who also knows Cairo's souks intimately.\n\n` +
+
+            `CRITICAL RULE — NEVER compare prices across different product categories.\n` +
+            `Each category has its own completely different price floor:\n` +
+            `  Produce    : tomato 8–25 EGP/kg | potato 10–20 EGP/kg | banana 25–50 EGP/kg | onion 15–30 EGP/kg\n` +
+            `  Staples    : rice 25–55 EGP/kg | sugar 30–55 EGP/kg | oil 50–90 EGP/L | pasta 25–50 EGP/500g\n` +
+            `  Protein    : chicken 90–200 EGP/kg | beef 300–500 EGP/kg | eggs 120–180 EGP/30pcs | fish 80–200 EGP/kg\n` +
+            `  Dairy      : milk 25–50 EGP/L | cheese 60–120 EGP/400g | butter 80–140 EGP/200g\n` +
+            `  Household  : detergent 40–100 EGP/kg | tissue 30–70 EGP/box\n` +
+            `  Fuel       : petrol-95 ~13.75 EGP/L | petrol-92 ~12.25 EGP/L | diesel ~10.25 EGP/L\n\n` +
+
+            `A "spike" means one item is above its OWN normal range — not that it costs more than another item.\n` +
+            `Rice at 35 EGP is NOT cheap compared to chicken at 177 EGP. They are unrelated. Compare each item only to itself.\n\n` +
+
+            `TASK — produce exactly two parts:\n\n` +
+
+            `PART 1 — Line 1 only: output exactly one word, the MOOD KEYWORD:\n` +
+            `  FIRE   = one or more key staples (chicken, rice, oil, eggs, sugar) are reported ABOVE their normal upper range, OR 3+ items are trending high vs their own baseline.\n` +
+            `  STABLE = most reported prices fall within their normal ranges. Store spreads are moderate.\n` +
+            `  ICE    = multiple items are at or below the LOW end of their own normal range, suggesting deflation or promotional pricing.\n` +
+            `  Base MOOD strictly on each item vs its own range above — not vs other items.\n\n` +
+
+            `PART 2 — Starting line 3: a market intelligence brief in ${lang}. Exactly 3 sentences. Max 90 words. Plain prose paragraph, no bullets, no headers.\n` +
+            `  Sentence 1 — WHAT: Name the 2–3 most-reported items with their actual prices and units. State whether each is high, low, or normal relative to its own typical range. Example: "Chicken is trading at 160–177 EGP/kg, sitting near the upper end of its normal 90–200 EGP range."\n` +
+            `  Sentence 2 — WHERE: Identify the item with the widest price spread across stores. Quantify how much a shopper can save by comparing stores. Example: "Eggs show the widest spread at 130–175 EGP per 30-piece tray, meaning shoppers can save up to 45 EGP."\n` +
+            `  Sentence 3 — ACTION: Give one specific, immediately actionable shopping tip based strictly on what the data shows. Name the item and what to do. Example: "Stock up on rice now — at 32 EGP/kg it is below its usual floor, making this a strong buying window."\n\n` +
+
+            `HARD RULES:\n` +
+            `  • Use ONLY the numbers in the data below — never invent figures.\n` +
+            `  • If fewer than 3 reports exist, say the data is limited rather than guessing.\n` +
+            `  • Prices are in EGP unless a report explicitly states otherwise.\n` +
+            `  • Output format must be: line 1 = mood word, line 2 = blank, line 3+ = brief.\n\n` +
+
+            `OUTPUT EXAMPLE (follow this format exactly):\n` +
+            `FIRE\n\n` +
+            `Chicken is reported at 160–177 EGP/kg across four stores, sitting near the upper bound of its normal 90–200 EGP range and signalling tightening supply. The widest price gap belongs to eggs, ranging from 130 to 175 EGP per 30-piece tray, offering shoppers a potential saving of 45 EGP by comparing outlets. Delay chicken purchases until prices ease below 150 EGP/kg, and prioritise egg-price comparison before your next shop.\n\n` +
+
+            `RECENT REPORTS (compare each item only to its own category range above):\n${summary}`;
+
+          const rawText = await callAI(prompt, lang);
+          const lines = rawText.trim().split('\\n');
+
+          let mood = 'stable';
+          let text = rawText;
+
+          if (lines.length > 1 && ['fire', 'stable', 'ice'].some(m => lines[0].toLowerCase().includes(m))) {
+            const firstLine = lines[0].toLowerCase();
+            mood = firstLine.includes('fire') ? 'fire' : (firstLine.includes('ice') ? 'ice' : 'stable');
+            text = lines.slice(1).join('\\n').trim();
+          }
+
+          const ts = document.getElementById('ai-brief-ts');
+          if (ts) ts.textContent = isAr ? 'تحديث الآن' : 'Updated just now';
+
+          const moodOrbHtml = `<div class="ai-mood-orb mood-${mood}" title="Market Mood: ${mood}"></div>`;
+
+          const headerEl = document.querySelector('#view-home .panel-header h3');
+          if (headerEl && !document.querySelector('.ai-mood-orb')) {
+            headerEl.innerHTML += moodOrbHtml;
+          } else if (document.querySelector('.ai-mood-orb')) {
+            document.querySelector('.ai-mood-orb').className = `ai-mood-orb mood-${mood}`;
+          }
+
+          document.getElementById('ai-market-brief').innerHTML = text
+            ? `<p class="ai-text">${text}</p>`
+            : `<p class="ai-text" style="color:var(--text-muted);">AI analysis temporarily unavailable.</p>`;
+
+        } catch (err) {
+          document.getElementById('ai-market-brief').innerHTML =
+            `<p class="ai-text" style="color:var(--text-muted);">AI analysis temporarily unavailable.</p>`;
+        } finally {
+          if (btn) { btn.disabled = false; btn.querySelector('i').classList.remove('fa-spin'); }
+        }
+      },
+
+      // ── AI ITEM ANALYSIS ─────────────────────────────────────────
+      // Called after item data loads. Sends only aggregated price/location data
+      // (no free text) to Groq for a 2-3 sentence price intelligence analysis.
+      generateItemAnalysis: async function (itemName, reports) {
+        const panel = document.getElementById('ai-item-panel');
+        const content = document.getElementById('ai-item-content');
+        if (!panel || !content || reports.length < 2) return;
+
+        panel.style.display = 'block';
+        content.innerHTML = `<div class="ai-skeleton"><div class="ai-skeleton-line" style="width:100%;"></div><div class="ai-skeleton-line" style="width:75%;"></div></div>`;
+
+        const isAr = this.state.lang === 'ar';
+        const lang = isAr ? 'Arabic' : 'English';
+        const prices = reports.map(r => r.price);
+        const minP = Math.min(...prices).toFixed(2);
+        const maxP = Math.max(...prices).toFixed(2);
+        const avgP = (prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2);
+        const cheapest = reports.reduce((a, b) => a.price < b.price ? a : b);
+        const dataStr = reports.map(r => `${r.price.toFixed(2)} EGP @ ${r.store}, ${r.loc}`).join(' | ');
+
+        const prompt =
+          `You are a price intelligence analyst for Egypt. Analyze community data for "${itemName}" and write 2 sentences in ${lang}.\n` +
+          `Sentence 1: price range (${minP}–${maxP} EGP) and where cheapest is. Sentence 2: one practical tip. Max 55 words. Only use given numbers.\n\n` +
+          `DATA (${reports.length} reports): ${dataStr}\nAvg: ${avgP} EGP | Cheapest: ${cheapest.store} in ${cheapest.loc}`;
+
+        const text = await callAI(prompt, lang);
+        if (text) {
+          content.innerHTML = `<p class="ai-text">${text}</p>`;
+        } else {
+          panel.style.display = 'none';
+        }
+      },
+
+      generateSubmissionFeedback: async function (itemName, submittedPrice, allReports) {
+        const isAr = this.state.lang === 'ar';
+        const lang = isAr ? 'Arabic' : 'English';
+        const matching = allReports.filter(r => r.item && itemMatchesQuery(r.item, itemName) && r.price > 0);
+
+        let fbStr = "";
+
+        if (matching.length === 0) {
+          fbStr = isAr
+            ? `أنت أول من يبلّغ عن سعر "${itemName}" على وفرلي! شكراً.`
+            : `You're the first to report "${itemName}" on Waffarly! Thank you.`;
+        } else {
+          const avg = matching.reduce((s, r) => s + r.price, 0) / matching.length;
+          const diffPct = Math.round(((submittedPrice - avg) / avg) * 100);
+          const compare = diffPct <= -20 ? 'significantly below average — great find!'
+            : diffPct >= 20 ? 'significantly above the community average'
+              : 'close to the community average';
+
+          const prompt =
+            `Write ONE enthusiastic and conversational sentence in ${lang} for a user who just reported a price.\n` +
+            `Item: ${itemName} | Their price: ${submittedPrice} EGP | Community avg: ${avg.toFixed(2)} EGP (${matching.length} reports)\n` +
+            `Comparison: ${compare} (${Math.abs(diffPct)}% ${diffPct < 0 ? 'below' : 'above'} avg). Max 20 words.`;
+
+          const text = await callAI(prompt, lang);
+          fbStr = text ||
+            (isAr
+              ? `سعرك ${submittedPrice} EGP • متوسط المجتمع ${avg.toFixed(2)} EGP`
+              : `Your price: ${submittedPrice} EGP • Community avg: ${avg.toFixed(2)} EGP`);
+        }
+
+        // Show glowing toast
+        const toast = document.createElement('div');
+        toast.className = 'ai-toast-reactor';
+        toast.innerHTML = `<i class="fa-solid fa-sparkles"></i> <div>${fbStr}</div>`;
+        document.body.appendChild(toast);
+
+        // Trigger reflow & show
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 500);
+        }, 8000);
+      },
+
+      // ── AI CHAT WIDGET ──────────────────────────────────────────
+      toggleChat: function () {
+        const w = document.getElementById('ai-chat-window');
+        const widget = document.getElementById('ai-chat-widget');
+        const bubbleP = document.querySelector('#ai-chat-bubble .pulse');
+        if (w.classList.contains('hidden')) {
+          w.classList.remove('hidden');
+          widget.classList.add('open');
+          if (bubbleP) bubbleP.style.display = 'none';
+          setTimeout(() => document.getElementById('ai-chat-input').focus(), 100);
+        } else {
+          w.classList.add('hidden');
+          widget.classList.remove('open');
+        }
+      },
+
+      sendChatMessage: async function () {
+        const input = document.getElementById('ai-chat-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        const messagesEl = document.getElementById('ai-chat-messages');
+        input.value = '';
+
+        // User msg
+        messagesEl.innerHTML += `<div class="chat-msg user">${text}</div>`;
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        // AI typing msg
+        const loadingId = 'msg-' + Date.now();
+        messagesEl.innerHTML += `<div class="chat-msg ai" id="${loadingId}"><i class="fa-solid fa-spinner fa-spin"></i> Thinking...</div>`;
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        try {
+          const reports = await this.api.getReports();
+          const summary = reports.slice(0, 30).map(r => `${r.item}: ${r.price} EGP at ${r.loc}`).join(' | ');
+          const isAr = this.state.lang === 'ar';
+          const lang = isAr ? 'Arabic' : 'English';
+
+          const prompt =
+            `You are Waffarly's friendly AI shopping assistant — a savvy Cairo market expert who helps Egyptian consumers find the best prices before they buy.\n\n` +
+
+            `IMPORTANT — you are a price comparison assistant, NOT a seller. The products belong to third-party stores reported by the community. Your job is to:\n` +
+            `  • Tell the user where the cheapest price was reported for what they want to buy.\n` +
+            `  • Warn them if a price they mention sounds high compared to community reports.\n` +
+            `  • Name the specific store and area where the best deal was found, if available.\n` +
+            `  • Be honest when data is limited — never invent prices or stores.\n\n` +
+
+            `PRICE CONTEXT — use these ranges to judge if a reported price is good, normal, or expensive:\n` +
+            `  Produce  : tomato 8–25 | potato 10–20 | banana 25–50 | onion 15–30 EGP/kg\n` +
+            `  Staples  : rice 25–55 | sugar 30–55 | oil 50–90 EGP/L | pasta 25–50 EGP/500g\n` +
+            `  Protein  : chicken 90–200 | beef 300–500 EGP/kg | eggs 120–180 EGP/30pcs\n` +
+            `  Dairy    : milk 25–50 EGP/L | cheese 60–120 EGP/400g | butter 80–140 EGP/200g\n` +
+            `  Household: detergent 40–100 EGP/kg | tissue 30–70 EGP/box\n` +
+            `  Fuel     : petrol-95 ~13.75 | petrol-92 ~12.25 | diesel ~10.25 EGP/L\n\n` +
+
+            `CRITICAL RULES:\n` +
+            `  • NEVER compare prices across different categories (rice ≠ chicken in price scale).\n` +
+            `  • Only compare the same item across different stores or areas.\n` +
+            `  • If the user asks about an item with multiple reports, lead with the CHEAPEST store.\n` +
+            `  • If only one report exists, say "one report shows…" and recommend they verify in store.\n` +
+            `  • If no data exists for their item, say so honestly and suggest they report a price.\n` +
+            `  • You do not sell anything — always remind the user to verify prices before going.\n` +
+            `  • Prices are in EGP unless stated otherwise.\n\n` +
+
+            `RESPONSE STYLE:\n` +
+            `  • Friendly, direct, conversational — like a knowledgeable friend at the market.\n` +
+            `  • Respond in ${lang}.\n` +
+            `  • Under 60 words unless the user asks for detail.\n` +
+            `  • If you found a good deal, lead with it. Example:\n` +
+            `    "Best price I see for chicken is 155 EGP/kg at Koki Store in Maadi — that's within the normal range. Another report shows 177 EGP at a different outlet, so Koki looks like your best bet. Always confirm the price when you arrive."\n\n` +
+
+            `USER QUESTION: "${text}"\n\n` +
+
+            `LIVE COMMUNITY PRICE DATA (use ONLY these numbers — never invent):\n${summary}`;
+
+          const response = await callAI(prompt, lang);
+
+          const el = document.getElementById(loadingId);
+          if (el) el.remove();
+          messagesEl.innerHTML += `<div class="chat-msg ai">${response || "I couldn't quite analyze that, try asking something else!"}</div>`;
+        } catch (e) {
+          const el = document.getElementById(loadingId);
+          if (el) el.remove();
+          messagesEl.innerHTML += `<div class="chat-msg ai" style="color:var(--danger)">Sorry, connection dropped.</div>`;
+        }
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      },
+
+      // --- TICKER (with anomaly badges) ---
       updateTicker: async function () {
-        const reports = await this.api.getLatestReports();
-        let htmlSnippet = '';
+        const reports = await this.api.getReports();
+        const isAr = this.state.lang === 'ar';
+        let html = '';
+
         reports.forEach(r => {
-          if (!r.item || isNaN(parseFloat(r.price))) return;
-          const priceFormatted = parseFloat(r.price).toFixed(2);
-          htmlSnippet += `<div class="ticker-item"><div class="pulse"></div><span>${r.item}</span><span class="store">@ ${r.store || 'Unknown'} (${r.loc || 'Unknown'})</span><span class="price">${priceFormatted} ${r.currency || 'EGP'}</span><span style="font-size:0.8rem;color:var(--text-muted); margin-left:0.5rem">${r.time}</span></div>`;
+          const price = parseFloat(r.price);
+          if (!r.item || isNaN(price) || price <= 0) return;
+
+          const currency = (r.currency || 'EGP').toUpperCase();
+          const priceFormatted = price.toFixed(2);
+          const timeStr = this.localizeTime(r);
+          const atLabel = isAr ? 'في' : '@';
+          const storeLabel = r.store || (isAr ? 'غير معروف' : 'Unknown');
+          const locLabel = r.loc || (isAr ? 'غير محدد' : 'Unknown');
+
+          // Anomaly badge — computed server-side and returned with each report
+          let badge = '';
+          if (r.anomaly === 'deal') {
+            badge = `<span style="background:rgba(16,185,129,0.2);color:var(--success);padding:1px 6px;border-radius:4px;font-size:0.72rem;font-weight:700;">🔥 ${isAr ? 'عرض' : 'DEAL'}</span>`;
+          } else if (r.anomaly === 'expensive') {
+            badge = `<span style="background:rgba(239,68,68,0.15);color:var(--danger);padding:1px 6px;border-radius:4px;font-size:0.72rem;font-weight:700;">⚠️ ${isAr ? 'مرتفع' : 'HIGH'}</span>`;
+          }
+
+          html += `<div class="ticker-item">
+            <div class="pulse"></div>
+            <span>${r.item}</span>
+            <span class="store">${atLabel} ${storeLabel} (${locLabel})</span>
+            <span class="price">${priceFormatted} ${currency}</span>
+            ${badge}
+            <span style="font-size:0.8rem;color:var(--text-muted);margin-inline-start:0.5rem">${timeStr}</span>
+          </div>`;
         });
 
-        if (!htmlSnippet) {
-           htmlSnippet = '<div class="ticker-item"><div class="pulse"></div><span>Waiting for community reports...</span></div>';
+        if (!html) {
+          html = `<div class="ticker-item"><div class="pulse"></div><span>${isAr ? 'في انتظار تقارير المجتمع...' : 'Waiting for community reports...'}</span></div>`;
         }
 
-        // Populate both tickers for scrolling effect
-        const heroTicker = document.getElementById('hero-ticker-content');
-        if (heroTicker) heroTicker.innerHTML = htmlSnippet;
-        
-        const heroClone = document.getElementById('hero-ticker-clone');
-        if (heroClone) heroClone.innerHTML = htmlSnippet;
-
-        const mainTicker = document.getElementById('ticker-content');
-        if (mainTicker) mainTicker.innerHTML = htmlSnippet;
-        
-        const mainClone = document.getElementById('ticker-content-clone');
-        if (mainClone) mainClone.innerHTML = htmlSnippet;
+        ['hero-ticker-content', 'hero-ticker-clone', 'ticker-content', 'ticker-content-clone'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = html;
+        });
       },
 
-      // --- MAPS (LEAFLET) ---
+      // --- MAPS ---
       initHomeMap: async function () {
+        // Initialize map once
         if (!this.state.mapHome) {
-          this.state.mapHome = L.map('heatmap', { zoomControl: false, attributionControl: false }).setView([30.0444, 31.2357], 11);
-          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(this.state.mapHome);
+          this.state.mapHome = L.map('heatmap', { zoomControl: false, attributionControl: false })
+            .setView([30.0444, 31.2357], 11);
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 })
+            .addTo(this.state.mapHome);
+          // FIX #3: Create a dedicated layer group for circles so we can clear it on refresh
+          this.state.mapHomeCircleLayer = L.layerGroup().addTo(this.state.mapHome);
         }
-        
-        const reports = await this.api.getLatestReports();
-        
-        const geoMap = {
-          "maadi": [29.9602, 31.2569], "zayed": [30.0450, 30.9850], "zamalek": [30.0626, 31.2222],
-          "new cairo": [30.0211, 31.4645], "giza": [30.0131, 31.2089], "downtown": [30.0444, 31.2357],
-          "shubra": [30.1286, 31.2422], "heliopolis": [30.0911, 31.3283], "nasr city": [30.0559, 31.3323],
-          "mohandeseen": [30.0553, 31.1983], "dokki": [30.0381, 31.2112], "rehab": [30.0526, 31.4880],
-          "madinaty": [30.0825, 31.6033], "october": [29.9381, 30.9136]
-        };
+
+        const reports = await this.api.getReports();
+
+        // FIX #3: Clear old circles before re-drawing
+        this.state.mapHomeCircleLayer.clearLayers();
 
         const heatCounts = {};
         reports.forEach(r => {
-           if(r.loc) {
-             const l = r.loc.toLowerCase();
-             let matched = false;
-             for(let k in geoMap) {
-                if(l.includes(k)) { heatCounts[k] = (heatCounts[k] || 0) + 1; matched = true; break;}
-             }
-             if(!matched) { heatCounts["downtown"] = (heatCounts["downtown"] || 0) + 1; }
-           }
+          if (r.loc) {
+            const l = r.loc.toLowerCase();
+            let matched = false;
+            for (let k in GEO_MAP) {
+              if (l.includes(k)) { heatCounts[k] = (heatCounts[k] || 0) + 1; matched = true; break; }
+            }
+            if (!matched) heatCounts["downtown"] = (heatCounts["downtown"] || 0) + 1;
+          }
         });
 
-        for(let k in heatCounts) {
-           L.circle(geoMap[k], { color: 'var(--primary)', fillColor: "rgba(108, 92, 231, 0.4)", fillOpacity: 0.6, radius: 1000 + (heatCounts[k]*300) }).addTo(this.state.mapHome);
+        for (let k in heatCounts) {
+          L.circle(GEO_MAP[k], {
+            color: '#6c5ce7',
+            fillColor: 'rgba(108, 92, 231, 0.4)',
+            fillOpacity: 0.6,
+            radius: 1000 + (heatCounts[k] * 300)
+          }).addTo(this.state.mapHomeCircleLayer);
         }
       },
 
       initItemMap: function (relReports = []) {
-        if (this.state.mapItem) { this.state.mapItem.remove(); }
-        this.state.mapItem = L.map('item-map', { zoomControl: false, attributionControl: false }).setView([30.0444, 31.2357], 11);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(this.state.mapItem);
+        if (this.state.mapItem) { this.state.mapItem.remove(); this.state.mapItem = null; }
 
-        const geoMap = {
-          "maadi": [29.9602, 31.2569], "zayed": [30.0450, 30.9850], "zamalek": [30.0626, 31.2222],
-          "new cairo": [30.0211, 31.4645], "giza": [30.0131, 31.2089], "downtown": [30.0444, 31.2357],
-          "shubra": [30.1286, 31.2422], "heliopolis": [30.0911, 31.3283], "nasr city": [30.0559, 31.3323],
-          "mohandeseen": [30.0553, 31.1983], "dokki": [30.0381, 31.2112], "rehab": [30.0526, 31.4880],
-          "madinaty": [30.0825, 31.6033], "october": [29.9381, 30.9136]
-        };
-        
+        this.state.mapItem = L.map('item-map', { zoomControl: false, attributionControl: false })
+          .setView([30.0444, 31.2357], 11);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 })
+          .addTo(this.state.mapItem);
+
         relReports.forEach(r => {
-             const l = (r.loc || "downtown").toLowerCase();
-             let coords = geoMap["downtown"];
-             for(let k in geoMap) if(l.includes(k)) coords = geoMap[k];
-             // Add tiny jitter
-             coords = [coords[0] + (Math.random()*0.02 - 0.01), coords[1] + (Math.random()*0.02 - 0.01)];
+          const l = (r.loc || 'downtown').toLowerCase();
+          let coords = GEO_MAP['downtown'];
+          for (let k in GEO_MAP) if (l.includes(k)) { coords = GEO_MAP[k]; break; }
+          coords = [coords[0] + (Math.random() * 0.02 - 0.01), coords[1] + (Math.random() * 0.02 - 0.01)];
 
-             const customIcon = L.divIcon({
-               className: 'custom-pin',
-               html: `<div style="background:var(--success); color:white; padding:4px 8px; border-radius:12px; font-weight:bold; font-size:12px; box-shadow:0 2px 10px rgba(0,0,0,0.5);">${parseFloat(r.price).toFixed(2)}</div>`,
-               iconSize: [60, 24], iconAnchor: [30, 12]
-             });
-             L.marker(coords, { icon: customIcon }).addTo(this.state.mapItem);
+          const price = parseFloat(r.price);
+          if (isNaN(price) || price <= 0) return;
+
+          // FIX #2: Currency uppercase on map pins too
+          const currency = (r.currency || 'EGP').toUpperCase();
+          const customIcon = L.divIcon({
+            className: 'custom-pin',
+            html: `<div style="background:var(--success); color:white; padding:4px 8px; border-radius:12px; font-weight:bold; font-size:12px; box-shadow:0 2px 10px rgba(0,0,0,0.5);">${price.toFixed(2)} ${currency}</div>`,
+            iconSize: [80, 24], iconAnchor: [40, 12]
+          });
+          L.marker(coords, { icon: customIcon }).addTo(this.state.mapItem);
         });
+
+        // FIX #9: Force Leaflet to recalculate map size after re-mount
+        setTimeout(() => {
+          if (this.state.mapItem) this.state.mapItem.invalidateSize();
+        }, 200);
       },
 
-
-      // --- CHART.JS ---
+      // --- CHART ---
       initChart: function (relReports = []) {
         const ctx = document.getElementById('priceChart');
         if (this.state.chartInstance) { this.state.chartInstance.destroy(); }
 
-        const labels = [];
-        const data = [];
-        
-        if (relReports.length > 0) {
-            // Sort by earliest first
-            relReports.forEach((r, idx) => {
-               labels.push(r.time || `Trend Pt ${idx+1}`);
-               data.push(parseFloat(r.price));
-            });
-            labels.reverse();
-            data.reverse();
-        } else {
-            labels.push("No data"); data.push(0);
-        }
+        // FIX #1: Filter out zero/invalid prices from chart too
+        const validReports = relReports.filter(r => parseFloat(r.price) > 0);
 
-        // Create gradient fill
+        const labels = validReports.length > 0
+          ? validReports.map(r => r.time || '').reverse()
+          : ['No data'];
+        const data = validReports.length > 0
+          ? validReports.map(r => parseFloat(r.price)).reverse()
+          : [0];
+
         const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 350);
         gradient.addColorStop(0, 'rgba(108, 92, 231, 0.5)');
         gradient.addColorStop(1, 'rgba(108, 92, 231, 0.0)');
@@ -1288,10 +2428,10 @@
         this.state.chartInstance = new Chart(ctx, {
           type: 'line',
           data: {
-            labels: labels,
+            labels,
             datasets: [{
               label: 'Avg Price (EGP)',
-              data: data,
+              data,
               borderColor: '#6c5ce7',
               backgroundColor: gradient,
               borderWidth: 3,
@@ -1314,7 +2454,7 @@
                 padding: 10,
                 displayColors: false,
                 callbacks: {
-                  label: function (context) { return `${context.parsed.y.toFixed(2)} EGP`; }
+                  label: (ctx) => `${ctx.parsed.y.toFixed(2)} EGP`
                 }
               }
             },
@@ -1326,205 +2466,283 @@
         });
       },
 
-      // --- ITEM DATA MOCKING ---
+      // --- ITEM DATA ---
       loadItemData: async function (slug) {
-        // Change title and icon based on slug
         const titleEl = document.getElementById('item-name');
         const iconEl = document.getElementById('item-icon');
+        const rawKey = decodeURIComponent(slug);
+        // If Arabic query, resolve to English equivalent for DB search
+        const searchKey = BILINGUAL_MAP[rawKey.toLowerCase()] || rawKey;
 
-        let searchKey = decodeURIComponent(slug);
-        if (searchKey === 'milk') {
-          titleEl.innerText = "Milk 1L (Full Cream)";
-          iconEl.className = "fa-solid fa-jug-detergent";
-        } else if (slug === 'panadol') {
-          titleEl.innerText = "Panadol Advance 500mg";
-          iconEl.className = "fa-solid fa-pills";
-        } else if (slug === 'gas') {
-          titleEl.innerText = "Gasoline 95 Octane";
-          iconEl.className = "fa-solid fa-gas-pump";
-        } else if (slug === 'sugar') {
-          titleEl.innerText = "Sugar 1kg";
-          iconEl.className = "fa-solid fa-cubes-stacked";
-        } else if (slug === 'eggs') {
-          titleEl.innerText = "Eggs (30)";
-          iconEl.className = "fa-solid fa-egg";
-        } else if (slug === 'detergent') {
-          titleEl.innerText = "Laundry Detergent";
-          iconEl.className = "fa-solid fa-soap";
-        } else if (slug === 'arroz' || slug === 'rice') {
-          titleEl.innerText = "Arroz (Rice 1kg)";
-          iconEl.className = "fa-solid fa-bowl-rice";
-          searchKey = 'arroz';
+        const itemMap = {
+          milk: { label: 'Milk 1L (Full Cream)', icon: 'fa-jug-detergent' },
+          panadol: { label: 'Panadol Advance 500mg', icon: 'fa-pills' },
+          gas: { label: 'Gasoline 95 Octane', icon: 'fa-gas-pump' },
+          sugar: { label: 'Sugar 1kg', icon: 'fa-cubes-stacked' },
+          eggs: { label: 'Eggs (30)', icon: 'fa-egg' },
+          egg: { label: 'Eggs (30)', icon: 'fa-egg' },
+          detergent: { label: 'Laundry Detergent', icon: 'fa-soap' },
+          arroz: { label: 'Arroz (Rice 1kg)', icon: 'fa-bowl-rice' },
+          rice: { label: 'Arroz (Rice 1kg)', icon: 'fa-bowl-rice' },
+          banana: { label: 'Bananas', icon: 'fa-seedling' },
+          bananas: { label: 'Bananas', icon: 'fa-seedling' },
+          tomato: { label: 'Tomatoes', icon: 'fa-apple-whole' },
+          tomatoes: { label: 'Tomatoes', icon: 'fa-apple-whole' },
+          chicken: { label: 'Chicken', icon: 'fa-drumstick-bite' },
+          meat: { label: 'Meat', icon: 'fa-drumstick-bite' },
+          bread: { label: 'Bread', icon: 'fa-bread-slice' },
+          cheese: { label: 'Cheese', icon: 'fa-cheese' },
+          oil: { label: 'Cooking Oil', icon: 'fa-flask' },
+          water: { label: 'Water', icon: 'fa-droplet' },
+          onion: { label: 'Onions', icon: 'fa-circle' },
+          potato: { label: 'Potatoes', icon: 'fa-circle' },
+        };
+
+        // Check resolved English key first, then raw
+        const match = itemMap[searchKey.toLowerCase()] || itemMap[rawKey.toLowerCase()];
+        if (match) {
+          titleEl.innerText = match.label;
+          iconEl.className = `fa-solid ${match.icon}`;
         } else {
-          // Dynamic formatting for custom search queries
-          const capitalized = searchKey.charAt(0).toUpperCase() + searchKey.slice(1).replace(/-/g, ' ');
-          titleEl.innerText = capitalized;
-          iconEl.className = "fa-solid fa-box-open";
+          const display = searchKey.charAt(0).toUpperCase() + searchKey.slice(1).replace(/-/g, ' ');
+          titleEl.innerText = display;
+          iconEl.className = 'fa-solid fa-box-open';
         }
 
         const storeListEl = document.querySelector('.store-list');
         storeListEl.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Loading prices from database...</p>';
-        const reports = await this.api.getLatestReports();
-        
-        const relReports = reports.filter(r => r.item && r.item.toLowerCase().includes(searchKey.toLowerCase()) && !isNaN(parseFloat(r.price)));
-        
+
+        const reports = await this.api.getReports();
+
+        // Bilingual filter: rawKey covers Arabic input; searchKey covers the resolved English
+        const relReports = reports.filter(r =>
+          r.item && (itemMatchesQuery(r.item, rawKey) || itemMatchesQuery(r.item, searchKey)) &&
+          !isNaN(parseFloat(r.price)) && parseFloat(r.price) > 0
+        );
+
         if (relReports.length === 0) {
-           storeListEl.innerHTML = '<p style="color:var(--text-muted); text-align:center;">No recent price reports found for this item.</p>';
-           const metaEl = document.querySelector('.item-meta');
-           if(metaEl) metaEl.innerHTML = `Category: Local Intel &bull; Avg Price: <strong class="text-gradient">-- EGP</strong>`;
-           this.initChart([]);
-           this.initItemMap([]);
-           return;
+          storeListEl.innerHTML = '<p style="color:var(--text-muted); text-align:center;">No recent price reports found for this item.</p>';
+          document.querySelector('.item-meta').innerHTML = `Category: Local Intel &bull; Avg Price: <strong class="text-gradient">-- EGP</strong>`;
+          this.initChart([]);
+          this.initItemMap([]);
+          return;
         }
 
-        relReports.sort((a,b) => parseFloat(a.price) - parseFloat(b.price));
+        relReports.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+
         storeListEl.innerHTML = '';
         let total = 0;
         relReports.forEach(r => {
-           total += parseFloat(r.price);
-           storeListEl.innerHTML += `
-             <div class="store-item">
-               <div class="store-info">
-                 <strong>${r.store || 'Unknown Store'}</strong>
-                 <span>${r.loc || 'Unknown Area'}</span>
-               </div>
-               <div class="store-price">${parseFloat(r.price).toFixed(2)} ${r.currency || 'EGP'}</div>
-             </div>
-           `;
+          const price = parseFloat(r.price);
+          total += price;
+          const currency = (r.currency || 'EGP').toUpperCase();
+          const isAr = this.state.lang === 'ar';
+
+          // Anomaly badge from server-computed data
+          let badge = '';
+          if (r.anomaly === 'deal') {
+            badge = `<span style="background:rgba(16,185,129,0.2);color:var(--success);padding:2px 7px;border-radius:4px;font-size:0.72rem;font-weight:700;white-space:nowrap;">🔥 ${isAr ? 'عرض ممتاز' : 'Great Deal'}</span>`;
+          } else if (r.anomaly === 'expensive') {
+            badge = `<span style="background:rgba(239,68,68,0.15);color:var(--danger);padding:2px 7px;border-radius:4px;font-size:0.72rem;font-weight:700;white-space:nowrap;">⚠️ ${isAr ? 'مرتفع' : 'Pricey'}</span>`;
+          }
+
+          storeListEl.innerHTML += `
+            <div class="store-item">
+              <div class="store-info">
+                <strong>${r.store || 'Unknown Store'}</strong>
+                <span>${r.loc || 'Unknown Area'} · ${r.time || ''}</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;">
+                <div class="store-price">${price.toFixed(2)} ${currency}</div>
+                ${badge}
+              </div>
+            </div>`;
         });
-        
+
         const avg = (total / relReports.length).toFixed(2);
-        const metaEl = document.querySelector('.item-meta');
-        if(metaEl) metaEl.innerHTML = `Category: Local Intel &bull; Avg Price: <strong class="text-gradient">${avg} ${relReports[0].currency || 'EGP'}</strong>`;
+        const currency = (relReports[0].currency || 'EGP').toUpperCase();
+        document.querySelector('.item-meta').innerHTML =
+          `Category: Local Intel &bull; Avg Price: <strong class="text-gradient">${avg} ${currency}</strong>`;
 
         this.initChart(relReports);
         this.initItemMap(relReports);
+
+        // Trigger AI analysis after data renders (non-blocking)
+        const displayName = titleEl.innerText;
+        this.generateItemAnalysis(displayName, relReports);
       },
 
-      // --- MODAL HANDLERS ---
+      // --- MODALS ---
       openModal: function (id) {
         document.getElementById(id).classList.add('active');
-        if (id === 'report-modal' && this.state.userName) {
-          document.getElementById('report-name').value = this.state.userName;
+        if (id === 'report-modal') {
+          // Reset feedback panel
+          const fb = document.getElementById('submit-feedback');
+          if (fb) fb.style.display = 'none';
+          // Restore name from state
+          if (this.state.userName) {
+            const nameEl = document.getElementById('f-name');
+            if (nameEl) nameEl.value = this.state.userName;
+          }
         }
       },
-      closeModal: function (id) { document.getElementById(id).classList.remove('active'); },
 
-      openCategoryModal: async function(cat) {
-         this.openModal('category-modal');
-         document.getElementById('cat-modal-title').innerText = `${cat} Items`;
-         const body = document.getElementById('cat-modal-body');
-         body.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">Loading items...</p>';
-         
-         const reports = await this.api.getLatestReports();
-         const uniqueItems = Array.from(new Set(reports.map(r => r.item).filter(Boolean)));
-         
-         const dict = {
-            "Food": ["rice", "arroz", "sugar", "egg", "cheese", "milk", "bread", "meat", "chicken", "oil", "water", "apple"],
-            "Household": ["detergent", "soap", "tissue", "cleaner", "paper", "shampoo", "toothbrush"],
-            "Medicine": ["panadol", "pill", "medicine", "pharmacy", "tablet", "aspirin", "vitamin"],
-            "Fuel": ["gas", "fuel", "diesel", "petrol", "octane", "92", "95", "80"]
-         };
-         
-         const keywords = dict[cat] || [];
-         const matchedItems = uniqueItems.filter(item => {
-             const lower = item.toLowerCase();
-             return keywords.some(k => lower.includes(k));
-         });
-         
-         if(matchedItems.length === 0) {
-            body.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:2rem;">No new ${cat.toLowerCase()} items reported recently on the network.</p>`;
-            return;
-         }
-         
-         body.innerHTML = `<input type="text" id="cat-search" class="form-control" placeholder="Search ${cat} items..." style="margin-bottom:1rem;" onkeyup="app.filterCategoryItems()">
-         <div id="cat-item-list" style="display:flex; flex-direction:column; gap:0.5rem;"></div>`;
-         
-         const list = document.getElementById('cat-item-list');
-         matchedItems.forEach(item => {
-             const iconMap = { "Food": "fa-utensils", "Household": "fa-sink", "Medicine": "fa-pills", "Fuel": "fa-gas-pump" };
-             const icon = iconMap[cat] || "fa-box";
-             list.innerHTML += `<button class="btn btn-outline cat-modal-btn" style="text-align:left; justify-content:flex-start;" onclick="app.closeModal('category-modal'); app.navigate('item', {slug: '${item.toLowerCase()}'})"><i class="fa-solid ${icon}" style="width:25px;"></i> ${item}</button>`;
-         });
+      closeModal: function (id) {
+        document.getElementById(id).classList.remove('active');
       },
 
-      filterCategoryItems: function() {
-         const q = document.getElementById('cat-search')?.value.toLowerCase() || '';
-         document.querySelectorAll('.cat-modal-btn').forEach(btn => {
-            if(btn.innerText.toLowerCase().includes(q)) btn.style.display = 'flex';
-            else btn.style.display = 'none';
-         });
+      openCategoryModal: async function (cat) {
+        this.openModal('category-modal');
+        document.getElementById('cat-modal-title').innerText = cat + ' Items';
+        const body = document.getElementById('cat-modal-body');
+        body.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">Loading items...</p>';
+
+        const reports = await this.api.getReports();
+        const uniqueItems = Array.from(new Set(reports.map(r => r.item).filter(Boolean)));
+
+        // Both EN and AR keywords — itemMatchesQuery handles the cross-language lookup
+        const keywords = {
+          Food: ['rice', 'arroz', 'sugar', 'egg', 'cheese', 'milk', 'bread', 'meat', 'chicken',
+            'oil', 'water', 'apple', 'banana', 'tomato', 'onion', 'potato', 'garlic',
+            'fish', 'pasta', 'flour', 'butter', 'lemon', 'orange', 'mango',
+            'أرز', 'سكر', 'بيض', 'جبن', 'لبن', 'خبز', 'لحم', 'دجاج', 'زيت', 'مياه',
+            'تفاح', 'موز', 'طماطم', 'بصل', 'بطاطس', 'ثوم', 'سمك', 'مكرونة', 'دقيق', 'زبدة'],
+          Household: ['detergent', 'soap', 'tissue', 'cleaner', 'paper', 'shampoo', 'toothbrush',
+            'bleach', 'disinfectant',
+            'منظف', 'صابون', 'مناديل', 'شامبو', 'معجون', 'كلور'],
+          Medicine: ['panadol', 'pill', 'medicine', 'tablet', 'aspirin', 'vitamin', 'syrup', 'pharmacy',
+            'دواء', 'مسكن', 'بنادول', 'أسبرين', 'فيتامين'],
+          Fuel: ['gas', 'fuel', 'diesel', 'petrol', 'octane', '92', '95', '80',
+            'بنزين', 'سولار', 'غاز']
+        }[cat] || [];
+
+        // An item matches if ANY of the category keywords match it bilingually
+        const matched = uniqueItems.filter(item =>
+          keywords.some(k => itemMatchesQuery(item, k))
+        );
+
+        if (matched.length === 0) {
+          body.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:2rem;">No ${cat.toLowerCase()} items reported recently.</p>`;
+          return;
+        }
+
+        const iconMap = { Food: 'fa-utensils', Household: 'fa-sink', Medicine: 'fa-pills', Fuel: 'fa-gas-pump' };
+        const icon = iconMap[cat] || 'fa-box';
+
+        body.innerHTML = `
+          <input type="text" id="cat-search" class="form-control" placeholder="Search ${cat} items..."
+            style="margin-bottom:1rem;" oninput="app.filterCategoryItems(this.value)">
+          <div id="cat-item-list" style="display:flex; flex-direction:column; gap:0.5rem;"></div>`;
+
+        const list = document.getElementById('cat-item-list');
+        matched.forEach(item => {
+          const safeItem = item.replace(/'/g, "\\'");
+          list.innerHTML += `<button class="btn btn-outline cat-modal-btn" style="text-align:left; justify-content:flex-start;"
+            onclick="app.closeModal('category-modal'); app.navigate('item', {slug: '${encodeURIComponent(safeItem.toLowerCase())}'})"
+          ><i class="fa-solid ${icon}" style="width:25px;"></i> ${item}</button>`;
+        });
       },
 
-      showSuggestions: async function(val) {
-         const box = document.getElementById('search-suggestions');
-         if(!val || val.length < 2) { box.style.display = 'none'; return; }
-         
-         const reports = await this.api.getLatestReports();
-         const unique = Array.from(new Set(reports.map(r => r.item).filter(Boolean)));
-         
-         const matches = unique.filter(i => i.toLowerCase().includes(val.toLowerCase()));
-         if(matches.length === 0) { box.style.display = 'none'; return; }
-         
-         box.innerHTML = '';
-         matches.forEach(m => {
-            box.innerHTML += `<div class="suggestion-item" onclick="document.getElementById('search-input').value='${m}'; document.getElementById('search-suggestions').style.display='none'; app.navigate('item', {slug: '${encodeURIComponent(m.toLowerCase())}'})" style="padding:0.8rem 1rem; cursor:pointer; color:var(--text); border-bottom:1px solid var(--border-glass); transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">${m}</div>`;
-         });
-         box.style.display = 'flex';
+      filterCategoryItems: function (q = '') {
+        q = q.toLowerCase();
+        document.querySelectorAll('.cat-modal-btn').forEach(btn => {
+          // Bilingual filter inside category modal too
+          const label = btn.innerText.trim();
+          btn.style.display = (!q || itemMatchesQuery(label, q)) ? 'flex' : 'none';
+        });
       },
 
-      updateLeaderboard: async function() {
+      // Debounced search suggestions with bilingual matching
+      showSuggestions: function (val) {
+        const box = document.getElementById('search-suggestions');
+        clearTimeout(this.state.suggestDebounceTimer);
+
+        if (!val || val.length < 2) { box.style.display = 'none'; return; }
+
+        this.state.suggestDebounceTimer = setTimeout(async () => {
+          const reports = await this.api.getReports();
+          const unique = Array.from(new Set(reports.map(r => r.item).filter(Boolean)));
+          // Bilingual: match item against query and its AR/EN equivalents
+          const matches = unique.filter(i => itemMatchesQuery(i, val));
+
+          if (matches.length === 0) { box.style.display = 'none'; return; }
+
+          box.innerHTML = matches.map(m => {
+            const safeM = m.replace(/'/g, "\\'");
+            return `<div class="suggestion-item"
+              onclick="document.getElementById('search-input').value='${safeM}'; document.getElementById('search-suggestions').style.display='none'; app.navigate('item', {slug: '${encodeURIComponent(safeM.toLowerCase())}'})"
+              style="padding:0.8rem 1rem; cursor:pointer; border-bottom:1px solid var(--border-glass); transition:background 0.2s;"
+              onmouseover="this.style.background='rgba(255,255,255,0.05)'"
+              onmouseout="this.style.background='transparent'"
+            >${m}</div>`;
+          }).join('');
+          box.style.display = 'flex';
+        }, 350);
+      },
+
+      // --- LEADERBOARD ---
+      updateLeaderboard: async function () {
         const lb = document.querySelector('.leaderboard-list');
-        if(!lb) return;
-        lb.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">Loading latest leaderboard data...</p>';
-        const reports = await this.api.getLatestReports();
-        if(reports.length === 0) {
-           lb.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">No data yet.</p>';
-           return;
+        if (!lb) return;
+        lb.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">Loading leaderboard...</p>';
+
+        const reports = await this.api.getReports();
+        if (reports.length === 0) {
+          lb.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">No data yet.</p>';
+          return;
         }
-        lb.innerHTML = '';
+
         const userCounts = {};
         reports.forEach(r => {
-           if(r.item) {
-             let alias = r.userName;
-             if (!alias || alias.toLowerCase().includes("anonymous") || alias.trim() === "waffarly_user") {
-                 alias = r.loc && r.loc.toLowerCase() !== "unknown" ? (r.loc + " Contributor") : "Anonymous Contributor";
-             }
-             if (alias.toLowerCase() !== "unknown contributor") userCounts[alias] = (userCounts[alias] || 0) + 1;
-           }
+          if (!r.item) return;
+          let alias = r.userName;
+          if (!alias || alias.toLowerCase().includes('anonymous') || alias.trim() === 'waffarly_user') {
+            alias = r.loc && r.loc.toLowerCase() !== 'unknown' ? r.loc + ' Contributor' : 'Anonymous Contributor';
+          }
+          if (alias.toLowerCase() !== 'unknown contributor') {
+            userCounts[alias] = (userCounts[alias] || 0) + 1;
+          }
         });
-        const sorted = Object.entries(userCounts).sort((a,b) => b[1] - a[1]);
-        
+
+        const sorted = Object.entries(userCounts).sort((a, b) => b[1] - a[1]);
+        lb.innerHTML = '';
         let rank = 1;
-        sorted.forEach((u, i) => {
-           if(u[0] === "Anonymous Contributor" || rank > 5) return;
-           const title = u[0];
-           const initial = title.charAt(0).toUpperCase();
-           const pts = u[1] * 10;
-           const cls = rank <= 3 ? 'top-3' : '';
-           lb.innerHTML += `
+
+        sorted.forEach(([name, count]) => {
+          if (name === 'Anonymous Contributor' || rank > 5) return;
+          const initial = name.charAt(0).toUpperCase();
+          const pts = count * 10;
+          const cls = rank <= 3 ? 'top-3' : '';
+          const avatarColor = rank === 1 ? 'var(--primary)' : rank === 2 ? 'var(--secondary)' : 'var(--success)';
+          lb.innerHTML += `
             <div class="glass leader-row ${cls}">
               <div class="leader-rank">#${rank}</div>
-              <div class="leader-avatar" style="background:var(--${rank==1?'primary':rank==2?'secondary':'success'});">${initial}</div>
+              <div class="leader-avatar" style="background:${avatarColor};">${initial}</div>
               <div style="flex:1;">
-                <span class="leader-name">${title} <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:0.8rem;"></i></span>
+                <span class="leader-name">${name} <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:0.8rem;"></i></span>
                 <span class="leader-badge">${rank === 1 ? 'Top Contributor' : 'Price Hunter'}</span>
               </div>
               <div class="leader-pts">${pts} pts</div>
             </div>`;
-           rank++;
+          rank++;
         });
-        if (lb.innerHTML === '') lb.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">No public contributors yet.</p>';
+
+        if (lb.innerHTML === '') {
+          lb.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:2rem;">No public contributors yet.</p>';
+        }
       },
 
-      showToast: function(message, type = 'success') {
+      // --- TOAST ---
+      showToast: function (message, type = 'success') {
         const container = document.getElementById('toast-container');
-        if(!container) return;
+        if (!container) return;
         const toast = document.createElement('div');
-        toast.className = `glass`;
-        const icon = type === 'success' ? '<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>' : '<i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i>';
+        toast.className = 'glass';
+        const icon = type === 'success'
+          ? '<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>'
+          : '<i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i>';
         const borderColor = type === 'success' ? 'var(--success)' : 'var(--danger)';
-        toast.style.cssText = `padding: 1rem 1.5rem; border-radius: 12px; border-left: 4px solid ${borderColor}; display:flex; align-items:center; gap:0.8rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: fadeUp 0.3s ease forwards;`;
+        toast.style.cssText = `padding:1rem 1.5rem; border-radius:12px; border-left:4px solid ${borderColor}; display:flex; align-items:center; gap:0.8rem; box-shadow:0 10px 30px rgba(0,0,0,0.5); animation:fadeUp 0.3s ease forwards;`;
         toast.innerHTML = `${icon} <span style="font-weight:bold;">${message}</span>`;
         container.appendChild(toast);
         setTimeout(() => {
@@ -1535,62 +2753,80 @@
         }, 4000);
       },
 
+      // --- SUBMIT REPORT ---
       submitReport: async function () {
-        const itemText = document.getElementById('report-item')?.value.trim();
-        const locText = document.getElementById('report-loc')?.value.trim();
-        
-        if (!itemText) {
-          app.showToast('Please enter the Item Name & Price first!', 'danger');
+        const item = document.getElementById('f-item')?.value.trim();
+        const price = parseFloat(document.getElementById('f-price')?.value);
+        const store = document.getElementById('f-store')?.value.trim() || 'Unknown Store';
+        const area = document.getElementById('f-area')?.value.trim() || 'Unknown Area';
+        const name = document.getElementById('f-name')?.value.trim();
+
+        const isAr = this.state.lang === 'ar';
+
+        if (!item) {
+          this.showToast(isAr ? 'الرجاء إدخال اسم السلعة' : 'Please enter an item name', 'danger');
+          return;
+        }
+        if (!price || price <= 0 || isNaN(price)) {
+          this.showToast(isAr ? 'الرجاء إدخال سعر صحيح' : 'Please enter a valid price', 'danger');
           return;
         }
 
-        const nameInput = document.getElementById('report-name');
-        if (nameInput && nameInput.value.trim()) {
-          this.state.userName = nameInput.value.trim();
-          localStorage.setItem('waffarly_name', this.state.userName);
+        if (name) {
+          this.state.userName = name;
+          localStorage.setItem('waffarly_name', name);
         }
 
-        const btn = document.querySelector('#report-modal .btn-primary');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting securely...';
+        const btn = document.getElementById('submit-report-btn');
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${this.t('submitSending')}`;
         btn.disabled = true;
 
         try {
-          const payload = {
-             rawItem: itemText,
-             rawLoc: locText,
-             userName: this.state.userName || this.state.userId
-          };
-          
-          await this.api.submitPrice(payload);
-          
-          setTimeout(() => {
-            app.showToast(`Request sent securely! Processing report...`, 'success');
-          }, 100);
-
+          await this.api.submitPrice({
+            item,
+            price,
+            currency: 'EGP',
+            store,
+            area,
+            userName: this.state.userName || this.state.userId
+          });
+          this.showToast(isAr ? 'تم الإرسال بنجاح!' : 'Submitted successfully!', 'success');
         } catch (e) {
-          console.error("Transmission Error:", e);
-          app.showToast("Error securely transmitting to database.", "danger");
+          console.error('Submission error:', e);
+          this.showToast(isAr ? 'خطأ في الإرسال، حاول مجدداً.' : 'Submission error, please try again.', 'danger');
+          btn.innerHTML = this.t('submitBtn');
+          btn.style.background = '';
+          btn.disabled = false;
+          return;
         }
 
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Report Sent! (+10 pts)';
+        btn.innerHTML = `<i class="fa-solid fa-check"></i> ${this.t('submitDone')}`;
         btn.style.background = 'var(--success)';
+        btn.disabled = false;
 
-        if(this.updateLeaderboard) this.updateLeaderboard();
+        // AI submission feedback — compare to community, non-blocking
+        try {
+          const allReports = await this.api.getReports();
+          this.generateSubmissionFeedback(item, price, allReports);
+        } catch (_) { }
 
+        // Close modal after 3s (gives user time to read AI feedback)
         setTimeout(() => {
           this.closeModal('report-modal');
-          // reset UI
-          btn.innerHTML = originalText;
+          btn.innerHTML = this.t('submitBtn');
           btn.style.background = '';
-          if(document.getElementById('report-item')) document.getElementById('report-item').value = '';
-          if(document.getElementById('report-loc')) document.getElementById('report-loc').value = '';
-        }, 2000);
+          ['f-item', 'f-price', 'f-store', 'f-area', 'f-name'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+          });
+          // Refresh live data after close
+          setTimeout(() => this.updateTicker(), 1500);
+          this.updateLeaderboard();
+          this.addSelfToLeaderboard();
+        }, 3500);
       },
 
       addSelfToLeaderboard: function () {
-        // Prevent duplicate self-inserts
         const lb = document.querySelector('.leaderboard-list');
         if (!lb || document.getElementById('user-lb-entry')) return;
 
@@ -1602,21 +2838,19 @@
         newRow.className = 'glass leader-row';
         newRow.style.border = '1px solid var(--success)';
         newRow.innerHTML = `
-            <div class="leader-rank" style="font-size:0.9rem; color:var(--success);">NEW</div>
-            <div class="leader-avatar" style="background:var(--success); color:white;">${initial}</div>
-            <div style="flex:1;">
-              <span class="leader-name">YOU (${displayName}) <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:0.8rem;"></i></span>
-              <span class="leader-badge">Just Submitted</span>
-            </div>
-            <div class="leader-pts">10 pts</div>
-        `;
-        // Insert right after the top 3 visually
-        lb.insertBefore(newRow, lb.children[3]);
+          <div class="leader-rank" style="font-size:0.9rem; color:var(--success);">NEW</div>
+          <div class="leader-avatar" style="background:var(--success); color:white;">${initial}</div>
+          <div style="flex:1;">
+            <span class="leader-name">YOU (${displayName}) <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:0.8rem;"></i></span>
+            <span class="leader-badge">Just Submitted</span>
+          </div>
+          <div class="leader-pts">10 pts</div>`;
+        lb.insertBefore(newRow, lb.children[3] || lb.firstChild);
       },
 
       submitAlert: function () {
         const btn = document.querySelector('#alert-modal .btn-primary');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Alert Saved to Database';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Alert Saved';
         btn.style.background = 'var(--success)';
         setTimeout(() => {
           this.closeModal('alert-modal');
@@ -1626,11 +2860,7 @@
       }
     };
 
-    // Initialize application when DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-      app.init();
-    });
-
+    document.addEventListener('DOMContentLoaded', () => app.init());
   </script>
 </body>
 
