@@ -487,6 +487,45 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    /* AI panel header: stack title row above controls on narrow screens */
+    #ai-market-section .panel-header>div:first-child {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    #ai-market-section .panel-header>div:last-child {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    #ai-brief-ts {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+      #ai-market-section .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      #ai-market-section .panel-header>div:last-child {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      #ai-refresh-btn {
+        flex: 1;
+        justify-content: center;
+      }
     }
 
     .panel-body {
@@ -827,10 +866,127 @@
       gap: 0.6rem;
     }
 
+    .ai-skeleton-line {
+      height: 14px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .ai-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+
+    .ai-stat {
+      text-align: center;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-glass);
+    }
+
+    .ai-stat-val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .ai-stat-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* ── STRUCTURED FORM ───────────────────────────── */
+    .form-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .form-row>* {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .price-input-wrap {
+      position: relative;
+    }
+
+    .price-input-wrap input {
+      padding-right: 3.5rem;
+    }
+
+    .price-currency-badge {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--success);
+      background: rgba(16, 185, 129, 0.15);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    [dir="rtl"] .price-input-wrap input {
+      padding-right: 1rem;
+      padding-left: 3.5rem;
+    }
+
+    [dir="rtl"] .price-currency-badge {
+      right: auto;
+      left: 0.75rem;
+    }
+
+    /* feedback card shown after submission */
+    #submit-feedback {
+      display: none;
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      background: rgba(108, 92, 231, 0.1);
+      border: 1px solid rgba(108, 92, 231, 0.3);
+      margin-top: 1rem;
+    }
+
+    #submit-feedback p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+      }
+
+      .ai-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ── MOOD ORB ───────────────────────────────────── */
     .ai-mood-orb {
       display: inline-block;
-      width: 14px;
-      height: 14px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       margin-left: 0.5rem;
       box-shadow: 0 0 10px currentColor;
@@ -852,6 +1008,7 @@
       background: var(--info);
     }
 
+    /* ── AI TOAST REACTOR ───────────────────────────── */
     .ai-toast-reactor {
       position: fixed;
       bottom: 2rem;
@@ -887,7 +1044,7 @@
       animation: pulse 2s infinite;
     }
 
-    /* ── AI CHAT WIDGET ────────────────────────────── */
+    /* ── AI CHAT WIDGET ─────────────────────────────── */
     #ai-chat-widget {
       position: fixed;
       bottom: 2rem;
@@ -1037,122 +1194,6 @@
       #ai-chat-widget {
         bottom: 1rem;
         right: 1rem;
-      }
-    }
-
-    .ai-skeleton-line {
-      height: 14px;
-      border-radius: 6px;
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-    }
-
-    @keyframes shimmer {
-      0% {
-        background-position: 200% 0;
-      }
-
-      100% {
-        background-position: -200% 0;
-      }
-    }
-
-    .ai-stat-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-top: 1.25rem;
-    }
-
-    .ai-stat {
-      text-align: center;
-      padding: 0.75rem;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-glass);
-    }
-
-    .ai-stat-val {
-      font-size: 1.4rem;
-      font-weight: 800;
-      background: var(--gradient-brand);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .ai-stat-label {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 0.2rem;
-    }
-
-    /* ── STRUCTURED FORM ───────────────────────────── */
-    .form-row {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .form-row>* {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .price-input-wrap {
-      position: relative;
-    }
-
-    .price-input-wrap input {
-      padding-right: 3.5rem;
-    }
-
-    .price-currency-badge {
-      position: absolute;
-      right: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--success);
-      background: rgba(16, 185, 129, 0.15);
-      padding: 0.15rem 0.5rem;
-      border-radius: 4px;
-      pointer-events: none;
-    }
-
-    [dir="rtl"] .price-input-wrap input {
-      padding-right: 1rem;
-      padding-left: 3.5rem;
-    }
-
-    [dir="rtl"] .price-currency-badge {
-      right: auto;
-      left: 0.75rem;
-    }
-
-    /* feedback card shown after submission */
-    #submit-feedback {
-      display: none;
-      padding: 1rem;
-      border-radius: var(--radius-sm);
-      background: rgba(108, 92, 231, 0.1);
-      border: 1px solid rgba(108, 92, 231, 0.3);
-      margin-top: 1rem;
-    }
-
-    #submit-feedback p {
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin: 0;
-    }
-
-    @media (max-width: 768px) {
-      .form-row {
-        flex-direction: column;
-      }
-
-      .ai-stat-grid {
-        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -1493,6 +1534,14 @@
             placeholder="Optional">
         </div>
 
+        <!-- AI post-submit feedback -->
+        <div id="submit-feedback">
+          <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+            <i class="fa-solid fa-brain" style="color:var(--primary);"></i>
+            <strong data-i18n="aiInsight">AI Insight</strong>
+          </div>
+          <p id="submit-feedback-text"></p>
+        </div>
 
         <button class="btn btn-primary" id="submit-report-btn" style="width:100%; margin-top:1.25rem;"
           onclick="app.submitReport()" data-i18n="submitBtn">
@@ -1549,22 +1598,24 @@
     </div>
   </div>
 
-  <!-- Ask Waffarly AI Widget -->
+  <!-- Ask Waffarly AI Chat Widget -->
   <div id="ai-chat-widget">
     <div id="ai-chat-bubble" onclick="app.toggleChat()">
       <i class="fa-solid fa-chart-line" style="color:white;"></i>
+      <div class="pulse"></div>
     </div>
     <div id="ai-chat-window" class="glass hidden">
       <div class="chat-header">
         <div style="display:flex; align-items:center; gap:0.5rem;">
           <i class="fa-solid fa-brain" style="color:var(--primary);"></i>
           <strong>Ask Waffarly AI</strong>
+          <span class="ai-badge" style="font-size:0.6rem;">BETA</span>
         </div>
         <button class="modal-close" style="position:static;" onclick="app.toggleChat()">&times;</button>
       </div>
       <div id="ai-chat-messages" class="chat-body">
-        <div class="chat-msg ai">Hello! I'm your Waffarly AI assistant. Ask me anything about current prices or market
-          trends!</div>
+        <div class="chat-msg ai">Hello! I'm your Waffarly AI assistant. Ask me anything about current prices or where to
+          find the best deals in Egypt!</div>
       </div>
       <div class="chat-input-area">
         <input type="text" id="ai-chat-input" placeholder="Ask about prices..."
@@ -2038,75 +2089,72 @@
               Math.abs(bestDeal.pctDev) + '% below avg';
           }
 
-          // Build prompt from data the frontend already has — no re-read needed
-          const summary = reports.slice(0, 20).map(r =>
-            `${r.item} — ${r.price.toFixed(2)} EGP — ${r.store} — ${r.loc}`
-          ).join('\n');
+          // Build rich data summary — item, price, store, area, anomaly flag
+          const summary = reports.slice(0, 25).map(r => {
+            const flag = r.anomaly === 'deal' ? ' [BELOW AVG]' : r.anomaly === 'expensive' ? ' [ABOVE AVG]' : '';
+            return `${r.item} | ${r.price.toFixed(2)} EGP | ${r.store} | ${r.loc}${flag}`;
+          }).join('\n');
+
+          // Per-item store breakdown for spread analysis
+          const byItem = {};
+          reports.forEach(r => {
+            if (!byItem[r.item]) byItem[r.item] = [];
+            byItem[r.item].push(r);
+          });
+          const spreadLines = Object.entries(byItem)
+            .filter(([, rows]) => rows.length > 1)
+            .map(([item, rows]) => {
+              const prices = rows.map(r => r.price);
+              const lo = Math.min(...prices).toFixed(2);
+              const hi = Math.max(...prices).toFixed(2);
+              const cheapestStore = rows.reduce((a, b) => a.price < b.price ? a : b);
+              return `${item}: ${lo}–${hi} EGP (cheapest: ${cheapestStore.store}, ${cheapestStore.loc})`;
+            }).join('\n');
 
           const lang = isAr ? 'Arabic' : 'English';
           const prompt =
-            `You are a senior consumer-market analyst specialising in Egyptian retail pricing. You think like a Bloomberg Intelligence analyst who also knows Cairo's souks intimately.\n\n` +
-
-            `CRITICAL RULE — NEVER compare prices across different product categories.\n` +
-            `Each category has its own completely different price floor:\n` +
-            `  Produce    : tomato 8–25 EGP/kg | potato 10–20 EGP/kg | banana 25–50 EGP/kg | onion 15–30 EGP/kg\n` +
-            `  Staples    : rice 25–55 EGP/kg | sugar 30–55 EGP/kg | oil 50–90 EGP/L | pasta 25–50 EGP/500g\n` +
-            `  Protein    : chicken 90–200 EGP/kg | beef 300–500 EGP/kg | eggs 120–180 EGP/30pcs | fish 80–200 EGP/kg\n` +
-            `  Dairy      : milk 25–50 EGP/L | cheese 60–120 EGP/400g | butter 80–140 EGP/200g\n` +
-            `  Household  : detergent 40–100 EGP/kg | tissue 30–70 EGP/box\n` +
-            `  Fuel       : petrol-95 ~13.75 EGP/L | petrol-92 ~12.25 EGP/L | diesel ~10.25 EGP/L\n\n` +
-
-            `A "spike" means one item is above its OWN normal range — not that it costs more than another item.\n` +
-            `Rice at 35 EGP is NOT cheap compared to chicken at 177 EGP. They are unrelated. Compare each item only to itself.\n\n` +
-
-            `TASK — produce exactly two parts:\n\n` +
-
-            `PART 1 — Line 1 only: output exactly one word, the MOOD KEYWORD:\n` +
-            `  FIRE   = one or more key staples (chicken, rice, oil, eggs, sugar) are reported ABOVE their normal upper range, OR 3+ items are trending high vs their own baseline.\n` +
-            `  STABLE = most reported prices fall within their normal ranges. Store spreads are moderate.\n` +
-            `  ICE    = multiple items are at or below the LOW end of their own normal range, suggesting deflation or promotional pricing.\n` +
-            `  Base MOOD strictly on each item vs its own range above — not vs other items.\n\n` +
-
-            `PART 2 — Starting line 3: a market intelligence brief in ${lang}. Exactly 3 sentences. Max 90 words. Plain prose paragraph, no bullets, no headers.\n` +
-            `  Sentence 1 — WHAT: Name the 2–3 most-reported items with their actual prices and units. State whether each is high, low, or normal relative to its own typical range. Example: "Chicken is trading at 160–177 EGP/kg, sitting near the upper end of its normal 90–200 EGP range."\n` +
-            `  Sentence 2 — WHERE: Identify the item with the widest price spread across stores. Quantify how much a shopper can save by comparing stores. Example: "Eggs show the widest spread at 130–175 EGP per 30-piece tray, meaning shoppers can save up to 45 EGP."\n` +
-            `  Sentence 3 — ACTION: Give one specific, immediately actionable shopping tip based strictly on what the data shows. Name the item and what to do. Example: "Stock up on rice now — at 32 EGP/kg it is below its usual floor, making this a strong buying window."\n\n` +
-
+            `You are a senior consumer-market analyst specialising in Egyptian retail. You write like a Bloomberg Intelligence brief — precise, data-anchored, immediately actionable.\n\n` +
+            `TASK: Write a 3-sentence market intelligence brief in ${lang}. Plain prose, no bullets, no headers. Max 90 words.\n\n` +
+            `SENTENCE 1 — WHAT IS MOVING: Name the 2–3 most-reported items. For each, state the exact price AND the specific store(s) where it was seen. Example: "Chicken breast is trading at 155–177 EGP/kg, with the lowest price reported at Koki Online Store and higher readings at unnamed outlets."\n\n` +
+            `SENTENCE 2 — STORE SPREAD INSIGHT: Pick the item with the widest price gap across stores. Name both the cheapest store+area and the most expensive. Quantify the saving. Example: "Eggs show the biggest spread: 130 EGP at Fruit Cart near Suez Bridge vs 175 EGP elsewhere — a 45 EGP gap worth acting on."\n\n` +
+            `SENTENCE 3 — SINGLE ACTIONABLE TIP: Based strictly on the data, tell the shopper exactly what to buy, where, and why now. Name the store and area. Example: "Head to the fruit cart on Suez Bridge for bananas at 35 EGP/kg — that is below the typical 40–50 EGP range and the best value in this dataset."\n\n` +
             `HARD RULES:\n` +
-            `  • Use ONLY the numbers in the data below — never invent figures.\n` +
-            `  • If fewer than 3 reports exist, say the data is limited rather than guessing.\n` +
-            `  • Prices are in EGP unless a report explicitly states otherwise.\n` +
-            `  • Output format must be: line 1 = mood word, line 2 = blank, line 3+ = brief.\n\n` +
-
-            `OUTPUT EXAMPLE (follow this format exactly):\n` +
-            `FIRE\n\n` +
-            `Chicken is reported at 160–177 EGP/kg across four stores, sitting near the upper bound of its normal 90–200 EGP range and signalling tightening supply. The widest price gap belongs to eggs, ranging from 130 to 175 EGP per 30-piece tray, offering shoppers a potential saving of 45 EGP by comparing outlets. Delay chicken purchases until prices ease below 150 EGP/kg, and prioritise egg-price comparison before your next shop.\n\n` +
-
-            `RECENT REPORTS (compare each item only to its own category range above):\n${summary}`;
+            `• Use ONLY the prices, store names, and areas in the data — never invent.\n` +
+            `• Never compare prices across different product categories.\n` +
+            `• If a store name is "Unknown Store", say "a community-reported outlet".\n` +
+            `• Prices are EGP unless stated otherwise.\n\n` +
+            `REPORTS:\n${summary}\n\n` +
+            `STORE SPREAD DATA:\n${spreadLines || 'Only single reports per item — no spread comparison available.'}`;
 
           const rawText = await callAI(prompt, lang);
-          const lines = rawText.trim().split('\\n');
 
+          // Parse optional MOOD keyword from first line (FIRE / STABLE / ICE)
+          const lines = rawText.split('\n');
           let mood = 'stable';
           let text = rawText;
-
           if (lines.length > 1 && ['fire', 'stable', 'ice'].some(m => lines[0].toLowerCase().includes(m))) {
-            const firstLine = lines[0].toLowerCase();
-            mood = firstLine.includes('fire') ? 'fire' : (firstLine.includes('ice') ? 'ice' : 'stable');
-            text = lines.slice(1).join('\\n').trim();
+            const fl = lines[0].toLowerCase();
+            mood = fl.includes('fire') ? 'fire' : fl.includes('ice') ? 'ice' : 'stable';
+            text = lines.slice(1).join('\n').trim();
+          }
+
+          // Update mood orb in panel header
+          const existingOrb = document.querySelector('.ai-mood-orb');
+          if (existingOrb) {
+            existingOrb.className = `ai-mood-orb mood-${mood}`;
+            existingOrb.title = `Market mood: ${mood}`;
+          } else {
+            const headerH3 = document.querySelector('#ai-market-section .panel-header h3');
+            if (headerH3) {
+              const orb = document.createElement('div');
+              orb.className = `ai-mood-orb mood-${mood}`;
+              orb.title = `Market mood: ${mood}`;
+              headerH3.appendChild(orb);
+            }
           }
 
           const ts = document.getElementById('ai-brief-ts');
           if (ts) ts.textContent = isAr ? 'تحديث الآن' : 'Updated just now';
-
-          const moodOrbHtml = `<div class="ai-mood-orb mood-${mood}" title="Market Mood: ${mood}"></div>`;
-
-          const headerEl = document.querySelector('#view-home .panel-header h3');
-          if (headerEl && !document.querySelector('.ai-mood-orb')) {
-            headerEl.innerHTML += moodOrbHtml;
-          } else if (document.querySelector('.ai-mood-orb')) {
-            document.querySelector('.ai-mood-orb').className = `ai-mood-orb mood-${mood}`;
-          }
 
           document.getElementById('ai-market-brief').innerHTML = text
             ? `<p class="ai-text">${text}</p>`
@@ -2141,9 +2189,11 @@
         const dataStr = reports.map(r => `${r.price.toFixed(2)} EGP @ ${r.store}, ${r.loc}`).join(' | ');
 
         const prompt =
-          `You are a price intelligence analyst for Egypt. Analyze community data for "${itemName}" and write 2 sentences in ${lang}.\n` +
-          `Sentence 1: price range (${minP}–${maxP} EGP) and where cheapest is. Sentence 2: one practical tip. Max 55 words. Only use given numbers.\n\n` +
-          `DATA (${reports.length} reports): ${dataStr}\nAvg: ${avgP} EGP | Cheapest: ${cheapest.store} in ${cheapest.loc}`;
+          `You are a senior price intelligence analyst for Egypt. The community has reported prices for "${itemName}" across ${reports.length} store(s). Write exactly 2 sentences in ${lang}.\n\n` +
+          `SENTENCE 1: State the price range (${minP}–${maxP} EGP), name the cheapest store ("${cheapest.store}" in "${cheapest.loc}" at ${cheapest.price.toFixed(2)} EGP), and note whether this is a good price or not.\n` +
+          `SENTENCE 2: Give one specific, immediately actionable buying tip. Name the exact store and area. If there is a wide spread between stores, flag how much the shopper saves by going to the cheapest option.\n\n` +
+          `Max 60 words total. Use ONLY the numbers given — never invent.\n\n` +
+          `FULL DATA: ${dataStr}\nAvg: ${avgP} EGP | Cheapest: ${cheapest.store}, ${cheapest.loc} (${cheapest.price.toFixed(2)} EGP) | Most expensive: ${Math.max(...prices).toFixed(2)} EGP`;
 
         const text = await callAI(prompt, lang);
         if (text) {
@@ -2158,12 +2208,12 @@
         const lang = isAr ? 'Arabic' : 'English';
         const matching = allReports.filter(r => r.item && itemMatchesQuery(r.item, itemName) && r.price > 0);
 
-        let fbStr = "";
+        let fbStr = '';
 
         if (matching.length === 0) {
           fbStr = isAr
-            ? `أنت أول من يبلّغ عن سعر "${itemName}" على وفرلي! شكراً.`
-            : `You're the first to report "${itemName}" on Waffarly! Thank you.`;
+            ? `أنت أول من يبلّغ عن سعر "${itemName}" على وفرلي! شكراً على مساهمتك.`
+            : `You're the first to report "${itemName}" on Waffarly! Thank you for contributing.`;
         } else {
           const avg = matching.reduce((s, r) => s + r.price, 0) / matching.length;
           const diffPct = Math.round(((submittedPrice - avg) / avg) * 100);
@@ -2183,13 +2233,11 @@
               : `Your price: ${submittedPrice} EGP • Community avg: ${avg.toFixed(2)} EGP`);
         }
 
-        // Show glowing toast
+        // Show glowing AI toast at bottom of screen
         const toast = document.createElement('div');
         toast.className = 'ai-toast-reactor';
-        toast.innerHTML = `<i class="fa-solid fa-sparkles"></i> <div>${fbStr}</div>`;
+        toast.innerHTML = `<i class="fa-solid fa-sparkles"></i><div>${fbStr}</div>`;
         document.body.appendChild(toast);
-
-        // Trigger reflow & show
         setTimeout(() => toast.classList.add('show'), 10);
         setTimeout(() => {
           toast.classList.remove('show');
@@ -2197,16 +2245,14 @@
         }, 8000);
       },
 
-      // ── AI CHAT WIDGET ──────────────────────────────────────────
+      // ── AI CHAT WIDGET ───────────────────────────────────────────
       toggleChat: function () {
         const w = document.getElementById('ai-chat-window');
         const widget = document.getElementById('ai-chat-widget');
-        const bubbleP = document.querySelector('#ai-chat-bubble .pulse');
         if (w.classList.contains('hidden')) {
           w.classList.remove('hidden');
           widget.classList.add('open');
-          if (bubbleP) bubbleP.style.display = 'none';
-          setTimeout(() => document.getElementById('ai-chat-input').focus(), 100);
+          setTimeout(() => document.getElementById('ai-chat-input')?.focus(), 100);
         } else {
           w.classList.add('hidden');
           widget.classList.remove('open');
@@ -2215,78 +2261,84 @@
 
       sendChatMessage: async function () {
         const input = document.getElementById('ai-chat-input');
-        const text = input.value.trim();
-        if (!text) return;
+        const msgText = input.value.trim();
+        if (!msgText) return;
 
         const messagesEl = document.getElementById('ai-chat-messages');
         input.value = '';
 
-        // User msg
-        messagesEl.innerHTML += `<div class="chat-msg user">${text}</div>`;
+        // User bubble
+        messagesEl.innerHTML += `<div class="chat-msg user">${msgText}</div>`;
         messagesEl.scrollTop = messagesEl.scrollHeight;
 
-        // AI typing msg
+        // Typing indicator
         const loadingId = 'msg-' + Date.now();
         messagesEl.innerHTML += `<div class="chat-msg ai" id="${loadingId}"><i class="fa-solid fa-spinner fa-spin"></i> Thinking...</div>`;
         messagesEl.scrollTop = messagesEl.scrollHeight;
 
         try {
           const reports = await this.api.getReports();
-          const summary = reports.slice(0, 30).map(r => `${r.item}: ${r.price} EGP at ${r.loc}`).join(' | ');
           const isAr = this.state.lang === 'ar';
           const lang = isAr ? 'Arabic' : 'English';
 
+          // Build a rich per-item store breakdown so the AI can name stores precisely
+          const byItem = {};
+          reports.forEach(r => {
+            if (!byItem[r.item]) byItem[r.item] = [];
+            byItem[r.item].push(r);
+          });
+          const storeData = Object.entries(byItem).map(([item, rows]) => {
+            rows.sort((a, b) => a.price - b.price);
+            const lines = rows.map(r => `${r.price.toFixed(2)} EGP @ ${r.store} (${r.loc})`).join(', ');
+            return `${item}: ${lines}`;
+          }).join('\n');
+
           const prompt =
-            `You are Waffarly's friendly AI shopping assistant — a savvy Cairo market expert who helps Egyptian consumers find the best prices before they buy.\n\n` +
-
-            `IMPORTANT — you are a price comparison assistant, NOT a seller. The products belong to third-party stores reported by the community. Your job is to:\n` +
-            `  • Tell the user where the cheapest price was reported for what they want to buy.\n` +
-            `  • Warn them if a price they mention sounds high compared to community reports.\n` +
-            `  • Name the specific store and area where the best deal was found, if available.\n` +
-            `  • Be honest when data is limited — never invent prices or stores.\n\n` +
-
-            `PRICE CONTEXT — use these ranges to judge if a reported price is good, normal, or expensive:\n` +
-            `  Produce  : tomato 8–25 | potato 10–20 | banana 25–50 | onion 15–30 EGP/kg\n` +
-            `  Staples  : rice 25–55 | sugar 30–55 | oil 50–90 EGP/L | pasta 25–50 EGP/500g\n` +
-            `  Protein  : chicken 90–200 | beef 300–500 EGP/kg | eggs 120–180 EGP/30pcs\n` +
-            `  Dairy    : milk 25–50 EGP/L | cheese 60–120 EGP/400g | butter 80–140 EGP/200g\n` +
-            `  Household: detergent 40–100 EGP/kg | tissue 30–70 EGP/box\n` +
-            `  Fuel     : petrol-95 ~13.75 | petrol-92 ~12.25 | diesel ~10.25 EGP/L\n\n` +
-
-            `CRITICAL RULES:\n` +
-            `  • NEVER compare prices across different categories (rice ≠ chicken in price scale).\n` +
-            `  • Only compare the same item across different stores or areas.\n` +
-            `  • If the user asks about an item with multiple reports, lead with the CHEAPEST store.\n` +
-            `  • If only one report exists, say "one report shows…" and recommend they verify in store.\n` +
-            `  • If no data exists for their item, say so honestly and suggest they report a price.\n` +
-            `  • You do not sell anything — always remind the user to verify prices before going.\n` +
-            `  • Prices are in EGP unless stated otherwise.\n\n` +
-
-            `RESPONSE STYLE:\n` +
-            `  • Friendly, direct, conversational — like a knowledgeable friend at the market.\n` +
-            `  • Respond in ${lang}.\n` +
-            `  • Under 60 words unless the user asks for detail.\n` +
-            `  • If you found a good deal, lead with it. Example:\n` +
-            `    "Best price I see for chicken is 155 EGP/kg at Koki Store in Maadi — that's within the normal range. Another report shows 177 EGP at a different outlet, so Koki looks like your best bet. Always confirm the price when you arrive."\n\n` +
-
-            `USER QUESTION: "${text}"\n\n` +
-
-            `LIVE COMMUNITY PRICE DATA (use ONLY these numbers — never invent):\n${summary}`;
+            `You are Waffarly's AI shopping assistant — a sharp, friendly Cairo market expert who helps Egyptian consumers find the best prices before they buy. You have access to the latest community price reports.\n\n` +
+            `YOUR JOB:\n` +
+            `• Tell the user WHERE the cheapest price was reported, naming the specific store and area.\n` +
+            `• If multiple stores report the same item, rank them cheapest-first and name each.\n` +
+            `• Warn if a price the user mentions is high vs community data.\n` +
+            `• Be honest when data is limited — never invent prices, stores, or areas.\n` +
+            `• You do not sell anything — remind users to verify in-store.\n\n` +
+            `PRICE CONTEXT (use to judge good/normal/expensive):\n` +
+            `  Produce: tomato 8–25 | potato 10–20 | banana 25–50 | onion 15–30 EGP/kg\n` +
+            `  Staples: rice 25–55 | sugar 30–55 | oil 50–90 EGP/L | pasta 25–50 EGP/500g\n` +
+            `  Protein: chicken 90–200 | beef 300–500 EGP/kg | eggs 120–180 EGP/30pcs\n` +
+            `  Dairy: milk 25–50 EGP/L | cheese 60–120 EGP/400g\n` +
+            `  Fuel: petrol-95 ~13.75 | petrol-92 ~12.25 | diesel ~10.25 EGP/L\n\n` +
+            `HARD RULES:\n` +
+            `• Never compare prices across categories (rice price ≠ chicken price).\n` +
+            `• If store is "Unknown Store", say "a community-reported outlet".\n` +
+            `• Respond in ${lang}. Under 70 words unless detail is asked for.\n` +
+            `• Lead with the cheapest option, name the store and area.\n\n` +
+            `USER QUESTION: "${msgText}"\n\n` +
+            `LIVE COMMUNITY DATA (store-level breakdown):\n${storeData}`;
 
           const response = await callAI(prompt, lang);
 
           const el = document.getElementById(loadingId);
           if (el) el.remove();
-          messagesEl.innerHTML += `<div class="chat-msg ai">${response || "I couldn't quite analyze that, try asking something else!"}</div>`;
+          messagesEl.innerHTML += `<div class="chat-msg ai">${response || (isAr ? 'عذراً، حاول مرة أخرى.' : "Sorry, I couldn't fetch that — try again!")}</div>`;
+
         } catch (e) {
           const el = document.getElementById(loadingId);
           if (el) el.remove();
-          messagesEl.innerHTML += `<div class="chat-msg ai" style="color:var(--danger)">Sorry, connection dropped.</div>`;
+          messagesEl.innerHTML += `<div class="chat-msg ai" style="color:var(--danger)">Connection issue. Try again.</div>`;
         }
         messagesEl.scrollTop = messagesEl.scrollHeight;
       },
 
-      // --- TICKER (with anomaly badges) ---
+      submitAlert: function () {
+        const btn = document.querySelector('#alert-modal .btn-primary');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Alert Saved';
+        btn.style.background = 'var(--success)';
+        setTimeout(() => {
+          this.closeModal('alert-modal');
+          btn.innerHTML = 'Create Alert';
+          btn.style.background = '';
+        }, 1500);
+      },
       updateTicker: async function () {
         const reports = await this.api.getReports();
         const isAr = this.state.lang === 'ar';
